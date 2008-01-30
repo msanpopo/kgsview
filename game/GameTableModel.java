@@ -43,7 +43,7 @@ public class GameTableModel  extends AbstractTableModel{
     };
     private static final int[] columnWidth = {50, 20, 40, 260, 70, 110, 40, 50, 50, 50, 40};
     
-    private Game[] gameArray;       //日付順
+    private Game[] gameArray;       //日付の新しい順
     private String userName;
     
     public GameTableModel(){
@@ -66,11 +66,12 @@ public class GameTableModel  extends AbstractTableModel{
         if(gameArray.length == 0 || index < 0 || index > gameArray.length - 1){
             return null;
         }else{
-            return gameArray[index];
+            int length = gameArray.length;
+            return gameArray[length -1 - index];
         }
     }
     
-    public Game first(){
+    public Game last(){
         if(gameArray.length != 0){
             return gameArray[0];
         }else{
@@ -78,7 +79,7 @@ public class GameTableModel  extends AbstractTableModel{
         }
     }
     
-    public Game last(){
+    public Game first(){
         int l = gameArray.length;
         if(l != 0){
             return gameArray[l - 1];
