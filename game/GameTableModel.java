@@ -66,8 +66,7 @@ public class GameTableModel  extends AbstractTableModel{
         if(gameArray.length == 0 || index < 0 || index > gameArray.length - 1){
             return null;
         }else{
-            int length = gameArray.length;
-            return gameArray[length -1 - index];
+            return gameArray[index];
         }
     }
     

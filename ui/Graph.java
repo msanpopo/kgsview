@@ -186,7 +186,8 @@ public class Graph extends JPanel implements TableModelListener{
         
         int n = model.getRowCount();
         for(int i = 0; i < n; ++i){
-            Game game = model.getGame(i);
+            // 日付の逆順に並んでいるので逆順にとる
+            Game game = model.getGame(n - 1 - i);
             
             if(game.getGameType() != GameType.RANKED){
                 continue;
