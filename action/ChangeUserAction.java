@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import app.App;
+import archive.Archive;
 
 @SuppressWarnings("serial")
 public class ChangeUserAction  extends AbstractAction{
@@ -55,6 +56,9 @@ public class ChangeUserAction  extends AbstractAction{
         }
         
         GameList newGameList = new GameList(newUser);
+        Archive newArchive = new Archive(newUser);
+        
+        newArchive.read();
         
         if(newGameList.read() == true){
             appData.setGameList(newGameList);

@@ -30,6 +30,7 @@ import javax.swing.JOptionPane;
 import app.Resource;
 
 import game.Game;
+import java.util.TimeZone;
 import javax.swing.SwingWorker;
 import ui.DownloadDialog;
 
@@ -100,7 +101,8 @@ public class GameListDownloader extends SwingWorker<ArrayList<Game>, String>{
     }
     
     private  ArrayList<Game> doDownload() {
-        Html html = new Html(name, oldAccount);
+        TimeZone tz = TimeZone.getDefault();
+        Html html = new Html(name, oldAccount, tz);
         ArrayList<Game> gameListTmp = new ArrayList<Game>();
 
         html.download(this);      // 年と月を指定せずにもっとも最近の月のデータを取得

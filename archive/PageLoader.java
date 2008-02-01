@@ -19,8 +19,9 @@
  *
  */
 
-package action.util;
+package archive;
 
+import action.util.GameListDownloader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -33,7 +34,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.TimeZone;
 
-public class HtmlLoader {
+class PageLoader {
     private static final String URL_BASE = "http://www.gokgs.com/gameArchives.jsp?user=";
     private URL url;
     private String name;	// debug 用
@@ -41,34 +42,34 @@ public class HtmlLoader {
     private int year; 	// debug 用
     private int month; 	// debug 用
     
-    public HtmlLoader(String name, boolean oldAccount, TimeZone timeZone){
-        initHtmlLoader(name, oldAccount, timeZone, 0, 0);
+    public PageLoader(String name, boolean oldAccount, TimeZone timeZone){
+        init(name, oldAccount, timeZone, 0, 0);
     }
     
-    public HtmlLoader(String name, boolean oldAccount, TimeZone zone, int year, int month){
-        initHtmlLoader(name, oldAccount, zone, year, month);
+    public PageLoader(String name, boolean oldAccount, TimeZone timeZone, int year, int month){
+        init(name, oldAccount, timeZone, year, month);
     }
     
-    private void initHtmlLoader(String name, boolean oldAccount, TimeZone zone, int year, int month){
+    private void init(String name, boolean oldAccount, TimeZone zone, int year, int month){
         this.name = name;
         this.timeZone = zone;
         this.year = year;
         this.month = month;
         
     try{
-            if(year == 0 && month == 0){
-                if (oldAccount == true) {
-                    url = new URL(URL_BASE + name + "&oldAccounts=t");
-                } else {
-                    url = new URL(URL_BASE + name);
-                }
-            }else{
-                if (oldAccount == true) {
-                    url = new URL(URL_BASE + name + "&oldAccounts=t&year=" + year + "&month=" + month);
-                } else {
-                    url = new URL(URL_BASE + name + "&year=" + year + "&month=" + month);
-                }
+        if(year == 0 && month == 0){
+            if (oldAccount == true) {
+                url = new URL(URL_BASE + name + "&oldAccounts=t");
+            } else {
+                url = new URL(URL_BASE + name);
             }
+        }else{
+            if (oldAccount == true) {
+                url = new URL(URL_BASE + name + "&oldAccounts=t&year=" + year + "&month=" + month);
+            } else {
+                url = new URL(URL_BASE + name + "&year=" + year + "&month=" + month);
+            }
+        }
         }catch(MalformedURLException e){
             url = null;
             System.out.println("HtmlLoader:MalformedURLException name:" + name + " year:" + year + " month:" + month);
@@ -76,10 +77,10 @@ public class HtmlLoader {
         System.out.println("HtmlLoader:url:" + url);
     }
     
-    public String download(GameListDownloader glloader){
+    public Page download(GameListDownloader glloader){
         HttpURLConnection connection = null;
         BufferedReader reader = null;
-        String charset = "ISO-8859-1";
+        String charset = "UTF-8";
         StringBuffer body = new StringBuffer();
         int contentLength = 0;
         int downloaded = 0;
@@ -109,16 +110,19 @@ public class HtmlLoader {
             
             showHeader(connection);
             
-            glloader.firePropertyChange("lenght", 0, contentLength);
-            
+            if(glloader != null){
+                glloader.firePropertyChange("lenght", 0, contentLength);
+            }
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), charset));
             while ((l = reader.read(buf, 0, BUFSIZE)) != -1) {
                 int olddownloaded = downloaded;
                 downloaded += l;
                 body.append(buf, 0 ,l);
                 // System.out.println("download :" +  downloaded + "/" + contentLength);
-
-                glloader.firePropertyChange("downloded", olddownloaded, downloaded);
+                
+                if(glloader != null){
+                    glloader.firePropertyChange("downloded", olddownloaded, downloaded);
+                }
             }
 
         } catch (SocketTimeoutException e) {
@@ -140,7 +144,9 @@ public class HtmlLoader {
             }
         }
         
-        return body.toString();
+        Page page = new Page(name, body.toString());
+        
+        return page;
     }
     
     private void showHeader(HttpURLConnection con) {
@@ -155,9 +161,5 @@ public class HtmlLoader {
             String key = (String) it.next();
             System.out.println(" " + key + ":" + headers.get(key));
         }
-    }
-    
-    public String getUrlString(){
-        return url.toString();
     }
 }

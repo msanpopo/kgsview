@@ -31,7 +31,7 @@ import app.Resource;
 public class Result{
     // この列挙は、サーバーから帰ってくる文字列を直接変換したもの
     private static enum State {
-        UNKNOWN("", "Unknown"),
+        UNKNOWN("Unknown", "Unknown"),
         UNFINISHED("Unfinished", Resource.get("unfinished")),
         BLACKWIN("B", ""),
         WHITEWIN("W", ""),

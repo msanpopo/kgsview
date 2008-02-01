@@ -21,6 +21,7 @@
 
 package app;
 
+import archive.Archive;
 import game.GameList;
 import java.io.File;
 import java.util.TimeZone;
@@ -45,6 +46,7 @@ public class App{
     private Config config;
     
     private GameList gameList;
+    private Archive archive;
     
     private StatisticSet statisticSet;
     private MarkList markList;
@@ -110,6 +112,7 @@ public class App{
         config = new Config(cfgFile);
         
         gameList = new GameList();
+        archive = new Archive();
         statisticSet = new StatisticSet();
         
         markList = new MarkList();

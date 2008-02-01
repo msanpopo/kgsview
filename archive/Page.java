@@ -19,7 +19,7 @@
  *
  */
 
-package action.util;
+package archive;
 
 import game.RengoReviewGame;
 import java.util.ArrayList;
@@ -29,20 +29,22 @@ import java.util.regex.Pattern;
 import game.Game;
 import game.RengoGame;
 import game.ReviewGame;
-import java.util.TimeZone;
 
-public class Html {
+/**
+ * KGS Game Archives のページ
+ * 
+ * <pre>
+ * ウェブブラウザで見たページそのもので、指定したユーザーの指定した月の対局一覧と、
+ * ユーザー登録してから今までの月の一覧を持っている。
+ * 指定したユーザーが存在しなければ、対局一覧も月の一覧もない。
+ * ユーザーは存在するが指定した月に対局がなければ、対局一覧はないが月の一覧はある。
+ * </pre>
+ */
+class Page {
     private String name;
-    private boolean oldAccount;
-    private TimeZone timeZone;
-    private int year;       // 指定がなければゼロ
-    private int month;      // 指定がなければゼロ
     
-    private HtmlLoader loader;
-    
-    private String html;
-    private String gameTable;
-    private String monthTable;
+    private ArrayList<MonthGame> monthList = null;
+    private MonthGame monthGame = null;
     
     // 対局のテーブルと月のテーブルの両方があるパターン
     private static final Pattern p2 = Pattern.compile(".*?(<table.*?</table>).*?(<table.*?</table>).*");
@@ -50,91 +52,31 @@ public class Html {
     private static final Pattern p1 = Pattern.compile(".*?(<table.*?</table>).*");
     
     // 名前だけで検索した時のパターン
-    public Html(String name, boolean oldAccount, TimeZone zone){
+    public Page(String name, String html){
         this.name = name;
-        this.oldAccount = oldAccount;
-        this.timeZone = zone;
-        this.year = 0;
-        this.month = 0;
         
-        this.loader = new HtmlLoader(name, oldAccount, zone);
-        
-        html = null;
-        gameTable = null;
-        monthTable = null;
+        setHtml(html);
     }
 
-    /*
-    html の月のテーブルから抜き出した文字列から作るパターン
-    gameArchives.jsp?user=**name**&amp;oldAccounts=t&amp;year=2007&amp;month=6
-    gameArchives.jsp?user=**name**&amp;year=2007&amp;month=6
-     */
-    private static final Pattern pName = Pattern.compile("gameArchives.jsp\\?user=(.*)");
-    private static final Pattern pYear = Pattern.compile(";year\\=(\\d+)");
-    private static final Pattern pMonth = Pattern.compile(";month\\=(\\d+)");
-    
-    public Html(String str, TimeZone zone){
-        String[] a = str.split("\\&amp");
-        
-        name = null;
-        timeZone = zone;
-        year = 0;
-        month = 0;
-        
-        String nameTmp = "";
-        String yearTmp = "";
-        String monthTmp = "";
-        
-        if(a.length == 4){
-            nameTmp = a[0];
-            yearTmp = a[2];
-            monthTmp = a[3];
-
-            oldAccount = true;
-        }else if(a.length == 3){
-            nameTmp = a[0];
-            yearTmp = a[1];
-            monthTmp = a[2];
-                       
-            oldAccount = false;
-        }else{
-            System.err.println("Html():" + str);
-        }
-        
-        Matcher mName = pName.matcher(nameTmp);
-        Matcher mYear = pYear.matcher(yearTmp);
-        Matcher mMonth = pMonth.matcher(monthTmp);
-        
-        if(mName.matches()){
-            name = mName.group(1);
-        }else{
-            System.err.println("Html():name:" + str);
-        }
-        
-        oldAccount = true;
-        
-        if(mYear.matches()){
-            year = Integer.parseInt(mYear.group(1));
-        }else{
-            System.err.println("Html():Year:" + str);
-        }
-        
-        if(mMonth.matches()){
-            month = Integer.parseInt(mMonth.group(1));
-        }else{
-            System.err.println("Html():Month:" + str);
-        }
-        
-        System.out.println("Html():" + name + ":" + year + ":" + month + ":");
-        this.loader = new HtmlLoader(name, oldAccount, timeZone, year, month);
-        
-        html = null;
-        gameTable = null;
-        monthTable = null;
+    public boolean hasMonthList(){
+        return (monthList != null) ? true : false;
     }
     
-    public void download(GameListDownloader glloader){
-        html = loader.download(glloader);
+    public boolean hasGameTable(){
+        return (monthGame != null) ? true : false;
+    }
+    
+    public ArrayList<MonthGame> getMonthList(){
+        return monthList;
+    }
+    
+    public MonthGame getMonthGame(){
+        return monthGame;
+    }
+    
+    private void setHtml(String html){
+        String gameTable;
+        String monthTable;
         
         System.out.println("html::" + html);
                 
@@ -165,17 +107,62 @@ public class Html {
             gameTable = null;
             monthTable = null;
         }
+        
+        if(monthTable != null){
+            monthList = createMonthList(monthTable, gameTable);
+        }
+    }
+
+    private static final Pattern pTD = Pattern.compile("<td.*?</td>");	// <td> 要素を抜き出す
+    private static final Pattern pY = Pattern.compile("<td>([0-9]{4})</td>");
+    private static final Pattern pM0 = Pattern.compile("<td><a href=\"(.*?)\">([a-zA-Z]{3})</a></td>");
+    private static final Pattern pM1 = Pattern.compile("<td>([a-zA-Z]{3})</td>");
+        
+    private ArrayList<MonthGame> createMonthList(String monthTable, String gameTable) {
+        if(monthTable == null){
+            return null;
+        }
+
+        ArrayList<String> lines = lineAnalyse(monthTable);
+        if(lines.size() == 0){
+            return null;
+        }
+        
+        ArrayList<MonthGame> list = new ArrayList<MonthGame>();
+        
+        for (String line : lines){
+            Matcher mTD = pTD.matcher(line);
+            
+            int year = 0;
+            
+            while (mTD.find()) {
+                String td = mTD.group();
+                System.out.println("td:" + td);
+                
+                Matcher y = pY.matcher(td);
+                Matcher m0 = pM0.matcher(td);
+                Matcher m1 = pM1.matcher(td);
+                
+                if(y.matches()){
+                    year = Integer.parseInt(y.group(1));
+                    
+                }else if (m0.matches()) {
+                    int month = monthToInt(m0.group(2));
+                    MonthGame mg = new MonthGame(name, year, month);
+                    list.add(mg);
+                    
+                }else if(m1.matches()){
+                    int month = monthToInt(m1.group(1));
+                    monthGame = new MonthGame(name, year, month);
+                    monthGame.setGameList(createGameList(gameTable));
+                    list.add(monthGame);  
+                }
+            }
+        }
+        return list;
     }
     
-    public boolean hasMonthTable(){
-        return (monthTable != null) ? true : false;
-    }
-    
-    public boolean hasGameTable(){
-        return (gameTable != null) ? true : false;
-    }
-    
-    public ArrayList<Game> getGameList() {
+    private ArrayList<Game> createGameList(String gameTable) {
         ArrayList<Game> gameList;
         ArrayList <String> list;
         boolean firstLine = true;
@@ -258,37 +245,6 @@ public class Html {
         return gameList;
     }
     
-    // ここから返す Html に直近月は含まれない
-    public ArrayList<Html> getMonthList() {
-        ArrayList<Html> monthList = new ArrayList<Html>();
-        ArrayList<String> lines;
-        Pattern pTD = Pattern.compile("<td.*?</td>");	// <td> 要素を抜き出す
-        Pattern pM = Pattern.compile("<td><a href=\"(.*?)\">([a-zA-Z]{3})</a></td>"); // <td> 要素から月をあらわす文字列を抜き出す
-        
-        if(monthTable == null){
-            return monthList; // 空のリスト
-        }
-        
-        lines = lineAnalyse(monthTable);
-        
-        for (String line : lines){
-            Matcher mTD = pTD.matcher(line);
-            
-            while (mTD.find()) {
-                String td = mTD.group();
-                
-                Matcher m = pM.matcher(td);
-                if (m.matches()) {
-                    //System.out.println("Html.getMonthList:month:" + m.group(2) + ":" + m.group(1));
-                    
-                    Html h = new Html(m.group(1), timeZone);
-                    monthList.add(h);
-                }
-            }
-        }
-        return monthList;
-    }
-    
     // html のテーブルを行単位(<tr> 要素単位)の文字列に分解してリストで返す
     private ArrayList<String> lineAnalyse(String table) {
         ArrayList<String> list = new ArrayList<String>();
@@ -302,6 +258,20 @@ public class Html {
         }
         
         return list;
+    }
+    
+    private int monthToInt(String str){
+        String[] monthArray = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        int month = 1;
+        for(String m : monthArray){
+            if(m.equals(str)){
+                return month;
+            }
+            month += 1;
+        }
+        
+        System.err.println("error: Html.monthToInt:" + str);
+        return 0;
     }
     
     /* テーブルのユーザーのリンクをあらわす文字列から "gnugo [10k]" とかの文字列を抜き出す */
@@ -333,26 +303,5 @@ public class Html {
         }
         
         return url;
-    }
-    
-    public int compare(int year, int month){
-        if(this.year < year){
-            return -1;
-        }else if(this.year == year){
-            if (this.month < month){
-                return -1;
-            }else if(this.month == month){
-                return 0;
-            }else{
-                return 1;
-            }
-        }else{
-            return 1;
-        }
-    }
-    
-    @Override
-    public String toString(){
-        return loader.getUrlString();
     }
 }
