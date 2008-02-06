@@ -22,20 +22,25 @@
 package archive;
 
 import app.App;
+import app.Resource;
+import game.Game;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 public class Archive {
     private static final String MONTH_LIST = "month.txt";
     
     private String name = "";
-    private ArrayList<MonthGame> monthList = new ArrayList<MonthGame>();
+    private TreeSet<MonthGame> monthList = new TreeSet<MonthGame>();
+    private TreeSet<Game> allGame = new TreeSet<Game>();
     
     public Archive(){
     }
@@ -44,6 +49,73 @@ public class Archive {
         this.name = name;
     }
     
+    public String getName(){
+        return name;
+    }
+    
+    public int getSize(){
+        return allGame.size();
+    }
+    
+    public Collection<Game> getCollection(){
+        return allGame;
+    }
+    
+    public boolean hasCalendar(){
+        if(monthList.isEmpty()){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    
+    public boolean hasCalendar(int year, int month){
+        if(monthList.isEmpty()){
+            return false;
+        }
+        
+        int firstYear = monthList.first().getYear();
+        int firstMonth = monthList.first().getMonth();
+        int lastYear = monthList.last().getYear();
+        int lastMonth = monthList.last().getMonth();
+        
+        if(year < firstYear){
+            return false;
+        }else if(year == firstYear){
+            if(month >= firstMonth){
+                return true;
+            }else{
+                return false;
+            }
+        }else if(year > firstYear && year < lastYear){
+             return true;
+        }else if(year == lastYear){
+            if(month <= lastMonth){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+    
+    public int getFirstYear(){
+        if(hasCalendar()){
+            return monthList.first().getYear();
+        }else{
+            return 0;
+        }
+    }
+    
+    public int getLastYear(){
+        if(hasCalendar()){
+            return monthList.last().getYear();
+        }else{
+            return 0;
+        }
+    }
+        
     public void write(){
         if(name == null || name.isEmpty() || monthList.isEmpty()){
             return;
@@ -57,36 +129,21 @@ public class Archive {
             topDir.mkdir();
         }
 
-        BufferedWriter bw = null;
+        PrintWriter pw = null;
 
         try {
-            bw = new BufferedWriter(new FileWriter(listFile));
+            pw = new PrintWriter(new BufferedWriter(new FileWriter(listFile)));
             
             for (MonthGame mg : monthList) {
-                int year = mg.getYear();
-                int month = mg.getMonth();
-                StringBuilder str = new StringBuilder();
-                str.append(year);
-                if(month < 10){
-                    str.append("-0").append(month);
-                }else{
-                    str.append("-").append(month);
-                }
-                bw.write(str.toString());
-                bw.newLine();
-
+                mg.writeState(pw);
                 mg.write(topDir);
             }
         } catch (IOException ex) {
-            System.out.println("MonthGame write :: error:" + ex);
+            System.err.println("error:Archive write:" + ex);
         } finally {
-            if (bw != null) {
-                try {
-                    bw.flush();
-                    bw.close();
-                } catch (IOException e) {
-                    System.out.println("MonthGame flush  close :: error:" + e);
-                }
+            if (pw != null) {
+                pw.flush();
+                pw.close();
             }
         }
     }
@@ -111,12 +168,10 @@ public class Archive {
             br = new BufferedReader(new FileReader(listFile));
             
             while((line = br.readLine()) != null){
-                String[] strArray = line.split("-");
-                int year = Integer.parseInt(strArray[0]);
-                int month = Integer.parseInt(strArray[1]);
-                
-                MonthGame monthGame = new MonthGame(name, year, month);
+                MonthGame monthGame = new MonthGame(name, line);
                 monthGame.read(topDir);
+                
+                monthList.add(monthGame);
             }
             
         }catch(IOException ex){
@@ -132,15 +187,95 @@ public class Archive {
             }
         }
         
-        return;
+        allListUpdate();
     }
     
+    /**
+     * 月リストの更新と現在の月の対局リストの再取得を行う。（年と月を指定せずに表示する web ページ）
+     */
     public void update(){
         PageLoader loader = new PageLoader(name, false, TimeZone.getDefault());
         Page page = loader.download(null);
         
         if(page.hasMonthList()){
+            for(MonthGame mg : page.getMonthList()){
+                if(getMonthGame(mg.getYear(), mg.getMonth()) == null){
+                    monthList.add(mg);
+                }
+            }
             
+            if(page.hasGameTable()){
+                MonthGame newMg = page.getMonthGame();
+                MonthGame oldMg = getMonthGame(newMg.getYear(), newMg.getMonth());
+                monthList.remove(oldMg);
+                monthList.add(newMg);
+            }
+            
+            allListUpdate();
+            write();
+        }
+    }
+    
+    public void download(GameListDownloader downloader){
+        int nDownload = 0;
+        int nCurrent = 0;
+        for(MonthGame mg : monthList){
+            if(mg.getDownloadMark()){
+                nDownload += 1;
+            }
+        }
+        
+        for(MonthGame mg : monthList){
+            nCurrent += 1;
+            
+            String msg = Resource.get("downloading") + " " + nCurrent + " / " + nDownload;
+            downloader.setDownloadStatus(msg);
+            
+            boolean success = mg.download(downloader);
+            
+            if(success && mg != monthList.last()){
+                mg.setCompleted();
+            }
+            
+            if(downloader.isCanceled()){
+                System.out.println("Archive.download : cancel");
+                return;
+            }
+            
+            try {
+                // 2ch で kgs の管理者がこのようなツールを作る時はダウンロード間隔３秒以上あけるように言ってたという
+                // 書き込みを見たのでそれにならう。
+
+                Thread.sleep(3000);
+            } catch (InterruptedException ex) {
+                System.err.println("error:Archive:sleep():" + ex);
+                return;
+            }
+        }
+        
+        allListUpdate();
+        write();
+    }
+    
+    private MonthGame getMonthGame(int year, int month){
+        for(MonthGame mg : monthList){
+            if(mg.getYear() == year && mg.getMonth() == month){
+                return mg;
+            }
+        }
+        
+        return null;
+    }
+    
+    private void allListUpdate(){
+        allGame.clear();
+        
+        for(MonthGame mg : monthList){
+            if(mg.hasGameList()){
+                for(Game g : mg.getCollection()){
+                    allGame.add(g);
+                }
+            }
         }
     }
 }

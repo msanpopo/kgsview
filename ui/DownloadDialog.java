@@ -21,7 +21,7 @@
 
 package ui;
 
-import action.util.GameListDownloader;
+import archive.GameListDownloader;
 import app.App;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

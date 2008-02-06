@@ -40,7 +40,10 @@ public class StartTime implements Comparable<StartTime>{
         //System.out.println("StartTime:in:" + str);
         
         SimpleDateFormat df = new SimpleDateFormat("M/d/yy h:m a", Locale.US); 
-        df.setTimeZone(TimeZone.getTimeZone("GMT"));
+        
+        TimeZone timeZone = App.getInstance().getTimeZone();
+        
+        df.setTimeZone(timeZone);
         startTime = new Date();
 
         try {

@@ -51,7 +51,6 @@ class Page {
     // 月のテーブルのみがあるパターン
     private static final Pattern p1 = Pattern.compile(".*?(<table.*?</table>).*");
     
-    // 名前だけで検索した時のパターン
     public Page(String name, String html){
         this.name = name;
         

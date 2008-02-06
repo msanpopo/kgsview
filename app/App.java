@@ -1,7 +1,7 @@
 /*
  * KGSview - KGS(ネット碁会所)用戦績表示アプリケーション
  *
- * Copyright (C) 2006 -2007 sanpo
+ * Copyright (C) 2006, 2007, 2008 sanpo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,15 +21,15 @@
 
 package app;
 
-import archive.Archive;
-import game.GameList;
 import java.io.File;
 import java.util.TimeZone;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+
 import statistics.StatisticSet;
 import statistics.filter.FilterList;
 import ui.MainWindow;
+import archive.Archive;
 
 public class App{
     private static App appData;
@@ -45,7 +45,6 @@ public class App{
     
     private Config config;
     
-    private GameList gameList;
     private Archive archive;
     
     private StatisticSet statisticSet;
@@ -111,7 +110,6 @@ public class App{
     public void start(){
         config = new Config(cfgFile);
         
-        gameList = new GameList();
         archive = new Archive();
         statisticSet = new StatisticSet();
         
@@ -156,18 +154,18 @@ public class App{
         return filterList;
     }
     
-    public GameList getGameList(){
-        return gameList;
+    public Archive getArchive(){
+        return archive;
     }
     
-    public void setGameList(GameList newList){
-        gameList = newList;
+    public void setArchive(Archive newArchive){
+        archive = newArchive;
         
         renewStatistic();
     }
     
     public void renewStatistic(){
-        statisticSet.renew(gameList);
+        statisticSet.renew(archive);
     }
     
     public void filterSelectionChanged(){
@@ -181,7 +179,7 @@ public class App{
     }
     
     public String getCurrentUser(){
-        return gameList.getUserName();
+        return archive.getName();
     }
     
     // テーブルの表示に変更があるときによぶ。現状では、変更の可能性があるのは sgf ファイルのあるなし表示だけ。

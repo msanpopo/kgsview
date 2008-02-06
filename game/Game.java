@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import game.property.*;
+import java.io.PrintWriter;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -202,19 +203,15 @@ public class Game implements Comparable<Game>{
         return gameSetup.getBoardsize();
     }
     
-    public void write(Writer w){
-        try{
-            // System.out.println("write game :"+ gameType.getOrigString());
-            w.write("\"" + gameType.getString() + "\",");
-            w.write("\"" + black.getString() + "\",");
-            w.write("\"" + white.getString() + "\",");
-            w.write("\"" + gameSetup.toString() + "\",");
-            w.write("\"" + startTime.getOrigString() + "\",");
-            w.write("\"" + result.getOrigString() + "\",");
-            w.write("\"" + sgfFile.getOrigString() + "\"");
-        }catch(IOException e){
-            System.out.println("Game.wire:"+ e);
-        }
+    public void write(PrintWriter w){
+        // System.out.println("write game :"+ gameType.getOrigString());
+        w.print("\"" + gameType.getString() + "\",");
+        w.print("\"" + black.getString() + "\",");
+        w.print("\"" + white.getString() + "\",");
+        w.print("\"" + gameSetup.toString() + "\",");
+        w.print("\"" + startTime.getOrigString() + "\",");
+        w.print("\"" + result.getOrigString() + "\",");
+        w.println("\"" + sgfFile.getOrigString() + "\"");
     }
     
     @Override

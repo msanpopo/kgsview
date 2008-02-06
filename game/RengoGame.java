@@ -21,11 +21,10 @@
 
 package game;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 
 import game.property.*;
+import java.io.PrintWriter;
 
 public class RengoGame extends Game {
     private Player white1;
@@ -115,19 +114,15 @@ public class RengoGame extends Game {
     }
     
     @Override
-    public void write(Writer w){
-        try{
-            w.write("\"" + gameType.getString() + "\",");
-            w.write("\"" + black.getString() + "\",");
-            w.write("\"" + black1.getString() + "\",");
-            w.write("\"" + white.getString() + "\",");
-            w.write("\"" + white1.getString() + "\",");
-            w.write("\"" + gameSetup.toString() + "\",");
-            w.write("\"" + startTime.getOrigString() + "\",");
-            w.write("\"" + result.getOrigString() + "\",");
-            w.write("\"" + sgfFile.getOrigString() + "\"");
-            
-        }catch(IOException ex){
-        }
+    public void write(PrintWriter w){
+        w.print("\"" + gameType.getString() + "\",");
+        w.print("\"" + black.getString() + "\",");
+        w.print("\"" + black1.getString() + "\",");
+        w.print("\"" + white.getString() + "\",");
+        w.print("\"" + white1.getString() + "\",");
+        w.print("\"" + gameSetup.toString() + "\",");
+        w.print("\"" + startTime.getOrigString() + "\",");
+        w.print("\"" + result.getOrigString() + "\",");
+        w.println("\"" + sgfFile.getOrigString() + "\"");
     }
 }

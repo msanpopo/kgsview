@@ -1,7 +1,7 @@
 /*
  * KGSview - KGS(ネット碁会所)用戦績表示アプリケーション
  *
- * Copyright (C) 2006 -2007 sanpo
+ * Copyright (C) 2006, 2007, 2008 sanpo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,10 +22,10 @@
 package ui;
 
 import action.AddMarkAction;
+import action.ArchiveUpdateAction;
 import action.ChangeUserAction;
 import action.DelMarkAction;
 import action.FilterEditAction;
-import action.GameListUpdateAction;
 import action.QuitAction;
 import action.SettingAction;
 import app.App;
@@ -43,6 +43,7 @@ import statistics.StatisticSet;
 public class MainWindow extends javax.swing.JFrame implements TableModelListener{
     private StatisticSet sset;
     
+    private CalendarPanel calendarPanel;
     private GamePanel gamePanel;
     private StatisticPanel statisticPanel;
     private OpponentPanel opponentTab;
@@ -64,13 +65,14 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
         addUserMenuItem.setAction(new AddMarkAction(markList));
         delUserMenuItem.setAction(new DelMarkAction(markList));
         
-        updateButton.setAction(new GameListUpdateAction());
+        updateButton.setAction(new ArchiveUpdateAction());
         updateButton.setText("");
         
         userComboBox.setModel(markList);
         
         oldAccountCheckBox.setSelected(config.getBooleanProperty(KgsConfig.OLD_ACCOUNT));
         
+        calendarPanel = new CalendarPanel(sset.calendar);
         gamePanel = new GamePanel(sset.game);
         statisticPanel = new StatisticPanel(sset);
         opponentTab = new OpponentPanel(sset.opponent);
@@ -85,6 +87,7 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
         sset.game.addTableModelListener(this);
         sset.game.addTableModelListener(kgsGraphPanel);
         
+        tabbedPane.addTab(Resource.get("calendar"), calendarPanel);
         tabbedPane.addTab(Resource.get("labelGameList"), gamePanel);
         tabbedPane.addTab(Resource.get("labelStatistic"), statisticPanel);
         tabbedPane.addTab(Resource.get("labelOpponent"), opponentTab);

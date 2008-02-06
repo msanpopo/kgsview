@@ -31,7 +31,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,17 +45,30 @@ import java.util.regex.Pattern;
  * 
  * </pre>
  */
-class MonthGame {
+class MonthGame implements Comparable<MonthGame>{
     private String name;
     private int year;
     private int month;
-    
+
+    private boolean completed;
+    private boolean downloadMark;
+        
     private ArrayList<Game> gameList = null;
     
     public MonthGame(String name, int year, int month){
         this.name = name;
         this.year = year;
         this.month = month;
+        this.completed = false;
+        this.downloadMark = false;
+    }
+    
+    public MonthGame(String name, String line){
+        this.name = name;
+        
+        readState(line);
+        
+        this.downloadMark = false;
     }
     
     public int getYear(){
@@ -65,32 +81,76 @@ class MonthGame {
     
     public void setGameList(ArrayList<Game> newList){
         gameList = newList;
+        for(Game g : gameList){
+            g.checkUser(name);
+        }
+    }
+    
+    public void setDownloadMark(){
+        downloadMark = true;
+    }
+    
+    public boolean getDownloadMark(){
+        return downloadMark;
+    }
+    
+    public void setCompleted(){
+        completed = true;
+    }
+    
+    public Collection<Game> getCollection(){
+        return gameList;
+    }
+    
+    public boolean hasGameList(){
+        if(gameList == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    
+    /* 例："2008-01,false" */
+    public void writeState(PrintWriter pw){
+        pw.print(year);
+        pw.print("-");
+        if(month < 10){
+            pw.print("0");
+        }
+        pw.print(month);
+        pw.print(",");
+        pw.println(completed);
+    }
+    
+    /* line:"2008-01,false" */
+    public void readState(String line){
+        String[] str0 = line.split(",");
+        String[] str1 = str0[0].split("-");
+        
+        this.year = Integer.parseInt(str1[0]);
+        this.month = Integer.parseInt(str1[1]);
+        this.completed = Boolean.parseBoolean(str0[1]);
     }
     
     public void write(File topDir){
-        if(name == null || name.isEmpty() || gameList.isEmpty()){
+        if(name == null || name.isEmpty() || gameList == null || gameList.isEmpty()){
             return;
         }
         
         File csvFile = getCsvFile(topDir);
         
-        BufferedWriter bw = null;
+        PrintWriter pw = null;
         try{
-            bw = new BufferedWriter(new FileWriter(csvFile));
+            pw = new PrintWriter(new BufferedWriter(new FileWriter(csvFile)));
             for(Game game : gameList){
-                game.write(bw);
-                bw.newLine();
+                game.write(pw);
             }
         }catch(IOException ex){
             System.out.println("MonthGame write :: error:" + ex);
         }finally{
-            if(bw != null){
-                try{
-                    bw.flush();
-                    bw.close();
-                }catch(IOException e){
-                    System.out.println("MonthGame flush  close :: error:" + e);
-                }
+            if(pw != null){
+                pw.flush();
+                pw.close();
             }
         }
     }
@@ -156,8 +216,23 @@ class MonthGame {
         }
     }
     
-    public void update(){
+    public boolean download(GameListDownloader downloader){
+        if(downloadMark == false){
+            return false;
+        }
         
+        downloadMark = false;
+        
+        PageLoader loader = new PageLoader(name, false, TimeZone.getDefault(), year, month);
+        Page page = loader.download(downloader);
+        
+        if(page == null){
+            return false;
+        }else{
+            gameList = page.getMonthGame().gameList;
+            
+            return true;
+        }
     }
     
     private File getCsvFile(File topDir){       
@@ -174,4 +249,19 @@ class MonthGame {
         
         return csvFile;
     }
+            
+    @Override
+    public int compareTo(MonthGame mg){
+        int mgNum = mg.year * 100 + mg.month;
+        int num = year * 100 + month;
+        
+        if(mgNum < num){
+            return 1;
+        }else if(mgNum == num){
+            return 0;
+        }else{
+            return -1;
+        }
+    }
+
 }

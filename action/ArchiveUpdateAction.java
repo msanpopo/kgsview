@@ -22,43 +22,40 @@
 package action;
 
 import app.KgsConfig;
-import game.Game;
-import game.GameList;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import action.util.GameListDownloader;
+import archive.GameListDownloader;
 import app.App;
 import app.Resource;
+import archive.Archive;
 import javax.swing.SwingWorker;
 import ui.DownloadDialog;
 
 /*
  * 指定された GameList を更新する
  */
-@SuppressWarnings("serial")
-public class GameListUpdateAction  extends AbstractAction{
-    private GameList gameList;
+public class ArchiveUpdateAction  extends AbstractAction{
+    private Archive archive;
     private DownloadDialog dialog;
     private GameListDownloader downloader;
             
-    public GameListUpdateAction(){
+    public ArchiveUpdateAction(){
         init(null);
     }
     
-    public GameListUpdateAction(GameList gameList){
-        init(gameList);
+    public ArchiveUpdateAction(Archive archive){
+        init(archive);
     }
     
-    private void init(GameList list){
-        this.gameList = list;
+    private void init(Archive archive){
+        this.archive = archive;
         
         ClassLoader cl = this.getClass().getClassLoader();
         Icon icon  = new ImageIcon(cl.getResource("icon/stock_refresh.png"));
@@ -72,17 +69,13 @@ public class GameListUpdateAction  extends AbstractAction{
     public void actionPerformed(ActionEvent e){
         System.out.println("GameListUpdateAction:performed:" + e);
         
-        gameList = App.getInstance().getGameList();
+        archive = App.getInstance().getArchive();
         doAction();
     }
     
     public void doAction(){
-        downloader = gameList.getDownloader();
-        
-        if(downloader == null){
-            return;
-        }
-        
+        downloader = new GameListDownloader(archive);
+
         dialog = new DownloadDialog(downloader);
         dialog.resetProgressBar(0);
         dialog.setInfoText(Resource.get("downloadMonthTable"));
@@ -104,16 +97,10 @@ public class GameListUpdateAction  extends AbstractAction{
         dialog.setVisible(true);
         // 進捗ダイアログがモーダルで、スレッド終了でダイアログの閉じるので、実際にはここでとまる。
 
-        ArrayList<Game> newGameArray = downloader.getGameArray();
-                
-        if(newGameArray.size() == 0){
-            System.out.println("GameListUpdateAction : download : newGameList.size() == 0");
-            return;
-        }
+        Archive newArchive = downloader.getArchive();
+
+        newArchive.write();
         
-        gameList.addGameList(newGameArray);
-        gameList.write();
-        
-        App.getInstance().setGameList(gameList);
+        App.getInstance().setArchive(newArchive);
     }
 }

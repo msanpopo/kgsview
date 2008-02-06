@@ -1,7 +1,7 @@
 /*
  * KGSview - KGS(ネット碁会所)用戦績表示アプリケーション
  *
- * Copyright (C) 2006 -2007 sanpo
+ * Copyright (C) 2006, 2007, 2008 sanpo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

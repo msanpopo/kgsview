@@ -24,13 +24,15 @@ package statistics;
 import app.App;
 import app.Config;
 import app.KgsConfig;
+import archive.Archive;
+import archive.CalendarTableModel;
 import game.Game;
-import game.GameList;
 import game.GameTableModel;
 import statistics.filter.FilterList;
 import statistics.filter.GameFilter;
 
 public class StatisticSet {
+    public CalendarTableModel calendar;
     public GameTableModel game;
     public TypeTableModel type;
     public SetupTableModel setup;
@@ -47,6 +49,7 @@ public class StatisticSet {
     private GameFilter opponentFilter;
     
     public StatisticSet(){
+        calendar = new CalendarTableModel();
         game = new GameTableModel();
         type = new TypeTableModel();
         setup = new SetupTableModel();
@@ -79,12 +82,14 @@ public class StatisticSet {
         custom.build();
     }
     
-    public void renew(GameList gameList){
+    public void renew(Archive archive){
         System.out.println("StatisticSet.renew()");
         
-        int n = gameList.getSize();
+        int n = archive.getSize();
         
         Game[] gameArray = new Game[n];
+        
+        calendar.setArchive(archive);
         
         type.clear();
         setup.clear();
@@ -94,7 +99,7 @@ public class StatisticSet {
         custom.clear();
         
         int i = 0;
-        for(Game g : gameList.getGameCollection()){
+        for(Game g : archive.getCollection()){
             if(checkFilter(gameFilter, g)){
                 gameArray[i] = g;
                 ++i;
@@ -124,7 +129,7 @@ public class StatisticSet {
         }
         
         Game[] reversedArray = reverse(gameArray);
-        game.setGameArray(reversedArray, gameList.getUserName());
+        game.setGameArray(reversedArray, archive.getName());
         
         type.finish();
         setup.finish();

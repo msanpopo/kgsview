@@ -1,7 +1,7 @@
 /*
  * KGSview - KGS(ネット碁会所)用戦績表示アプリケーション
  *
- * Copyright (C) 2006 -2007 sanpo
+ * Copyright (C) 2006, 2007, 2008 sanpo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,16 +21,13 @@
 
 package action;
 
-import game.GameList;
-
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+
 import app.App;
 import archive.Archive;
 
-@SuppressWarnings("serial")
 public class ChangeUserAction  extends AbstractAction{
     private String newUser;
     
@@ -47,24 +44,22 @@ public class ChangeUserAction  extends AbstractAction{
     }
     
     public void doAction(){
-        System.out.println("ChangeUserAction:performed:cmd:" + newUser);
-
-        App appData = App.getInstance();
+        App app = App.getInstance();
         
-        if(newUser == null || newUser.equals("") || newUser.equals(appData.getCurrentUser())){
+        if(newUser == null || newUser.equals("") || newUser.equals(app.getCurrentUser())){
             return;
         }
         
-        GameList newGameList = new GameList(newUser);
+        System.out.println("ChangeUserAction:performed:cmd:" + newUser);
+
         Archive newArchive = new Archive(newUser);
         
         newArchive.read();
         
-        if(newGameList.read() == true){
-            appData.setGameList(newGameList);
-        }else{
-            GameListUpdateAction updateAction = new GameListUpdateAction(newGameList);
-            updateAction.doAction();
+        if(newArchive.getSize() == 0){
+            newArchive.update();
         }
+        
+        app.setArchive(newArchive);
     }
 }

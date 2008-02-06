@@ -21,11 +21,10 @@
 
 package game;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 
 import game.property.*;
+import java.io.PrintWriter;
 
 public class ReviewGame extends Game {
     private Player reviewer;
@@ -94,25 +93,21 @@ public class ReviewGame extends Game {
     }
     
     @Override
-    public void write(Writer w){
-        try{
-            // System.out.println("write reviewgame :"+ gameType.getOrigString());
-            w.write("\"" + gameType.getString() + "\",");
-            w.write("\"" + reviewer.getString() + "\",");
-            if(this.gameType == GameType.DEMO){
-                // demo の時は reviewer のみ
-                w.write("\"\",");
-                w.write("\"\",");
-            }else{
-                w.write("\"" + black.getString() + "\",");
-                w.write("\"" + white.getString() + "\",");
-            }
-            w.write("\"" + gameSetup.toString() + "\",");
-            w.write("\"" + startTime.getOrigString() + "\",");
-            w.write("\"" + result.getOrigString() + "\",");
-            w.write("\"" + sgfFile.getOrigString() + "\"");
-            
-        }catch(IOException ex){
+    public void write(PrintWriter w){
+        // System.out.println("write reviewgame :"+ gameType.getOrigString());
+        w.print("\"" + gameType.getString() + "\",");
+        w.print("\"" + reviewer.getString() + "\",");
+        if(this.gameType == GameType.DEMO){
+            // demo の時は reviewer のみ
+            w.print("\"\",");
+            w.print("\"\",");
+        }else{
+            w.print("\"" + black.getString() + "\",");
+            w.print("\"" + white.getString() + "\",");
         }
+        w.print("\"" + gameSetup.toString() + "\",");
+        w.print("\"" + startTime.getOrigString() + "\",");
+        w.print("\"" + result.getOrigString() + "\",");
+        w.println("\"" + sgfFile.getOrigString() + "\"");
     }
 }
