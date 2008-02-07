@@ -25,14 +25,13 @@ import app.App;
 import app.Config;
 import app.KgsConfig;
 import archive.Archive;
-import archive.CalendarTableModel;
 import game.Game;
 import game.GameTableModel;
 import statistics.filter.FilterList;
 import statistics.filter.GameFilter;
 
 public class StatisticSet {
-    public CalendarTableModel calendar;
+    public CalendarTable calendar;
     public GameTableModel game;
     public TypeTableModel type;
     public SetupTableModel setup;
@@ -49,7 +48,7 @@ public class StatisticSet {
     private GameFilter opponentFilter;
     
     public StatisticSet(){
-        calendar = new CalendarTableModel();
+        calendar = new CalendarTable();
         game = new GameTableModel();
         type = new TypeTableModel();
         setup = new SetupTableModel();

@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * 
  * </pre>
  */
-class MonthGame implements Comparable<MonthGame>{
+public class MonthGame implements Comparable<MonthGame>{
     private String name;
     private int year;
     private int month;
@@ -86,8 +86,9 @@ class MonthGame implements Comparable<MonthGame>{
         }
     }
     
-    public void setDownloadMark(){
-        downloadMark = true;
+    public void setDownloadMark(boolean mark){
+        System.out.println("MonthGame :" + year + "/" + month + " " + mark);
+        downloadMark = mark;
     }
     
     public boolean getDownloadMark(){

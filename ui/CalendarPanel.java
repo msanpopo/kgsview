@@ -21,85 +21,120 @@
 
 package ui;
 
-import archive.CalendarTableModel;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
+import statistics.CalendarTable;
+import statistics.CalendarTableListener;
 
-public class CalendarPanel extends JPanel implements TableModelListener{
-    private CalendarTableModel model;
+public class CalendarPanel extends JPanel implements CalendarTableListener, ActionListener{
+    private CalendarTable table;
     
-    public CalendarPanel(CalendarTableModel model) {
-        this.model = model;
+    private JPanel header;
+    
+    public CalendarPanel(CalendarTable table) {
+        this.table = table;
+        this.table.addCalendarTableListener(this);
         
+        this.header = new CalendarRowPanel(true);
+                
         initComponents();
-        
-        monthTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        monthTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        monthTable.addMouseListener(new MouseEventHandler());
-        
-        monthTable.setModel(model);
-        setColumnWidth(monthTable, model.getColumnWidth());
-        
-//        TableColumnModel columnModel = monthTable.getColumnModel();
-//        TableColumn colorColumn = columnModel.getColumn(1);
-//        colorColumn.setCellRenderer(new ColorCellRenderer());
-        
-        model.addTableModelListener(this);
+
+        rebuild(table);
+    }
+
+    public void calendarTableChanged(CalendarTable table) {
+        rebuild(table);
     }
     
-    private void setColumnWidth(JTable table, int[] width) {
-        TableColumnModel columnModel = table.getColumnModel();
+    private void rebuild(CalendarTable table){
+        vPanel.removeAll();
+
+        vPanel.add(header);
         
-        for (int i = 0; i < columnModel.getColumnCount(); ++i) {
-            TableColumn column = columnModel.getColumn(i);
-            column.setPreferredWidth(width[i]);
+        if(table.hasCalendar() == false){
+            return;
         }
+        
+        int firstYear = table.getFirstYear();
+        int firstMonth = table.getFirstMonth();
+        int lastYear = table.getLastYear();
+        int lastMonth = table.getLastMonth();
+        
+        System.out.println("aaa:" + firstYear + ":" + firstMonth);
+        System.out.println("aaa:" + lastYear + ":" + lastMonth);
+        
+        for(int y = firstYear; y <= lastYear; ++y){
+            CalendarRowPanel row = new CalendarRowPanel();
+            row.setYearLabel(String.valueOf(y));
+            
+            for(int m = 1; m <= 12; ++m){
+                if(table.hasCalendar(y, m)){
+                    System.out.println("zz y:" + y + ":" + m);
+                    row.addCheckBox(y, m, this);
+                }else{
+                    row.addLabel("");
+                }
+            }
+            JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
+            sep.setMaximumSize(new Dimension(10000, 3));
+            sep.setMinimumSize(new Dimension(1, 3));
+            sep.setPreferredSize(new Dimension(10000, 3));
+            
+            
+            vPanel.add(sep);
+            vPanel.add(row);
+        }
+        
+        repaint();
     }
     
-    @Override
-    public void tableChanged(TableModelEvent arg0) {
-        this.repaint();
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+        Object obj = e.getSource();
+        if(command != null && command.isEmpty() == false && obj instanceof JCheckBox){
+            String[] a = command.split("-");
+            JCheckBox checkBox = (JCheckBox)obj;
+            if(a.length == 2){
+                int year = Integer.parseInt(a[0]);
+                int month = Integer.parseInt(a[1]);
+
+                table.setDownloadMark(year, month, checkBox.isSelected());
+            }
+        }
     }
     
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        monthTable = new javax.swing.JTable();
+        vPanel = new javax.swing.JPanel();
 
-        monthTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(monthTable);
+        vPanel.setLayout(new javax.swing.BoxLayout(vPanel, javax.swing.BoxLayout.Y_AXIS));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(vPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(vPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable monthTable;
+    private javax.swing.JPanel vPanel;
     // End of variables declaration//GEN-END:variables
 }

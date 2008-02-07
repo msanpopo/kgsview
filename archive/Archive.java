@@ -100,9 +100,25 @@ public class Archive {
         }
     }
     
+    public void setDownloadMark(int year, int month, boolean mark){
+        for(MonthGame mg : monthList){
+            if(mg.getYear() == year && mg.getMonth() == month){
+                mg.setDownloadMark(mark);
+            }
+        }
+    }
+    
     public int getFirstYear(){
         if(hasCalendar()){
             return monthList.first().getYear();
+        }else{
+            return 0;
+        }
+    }
+    
+    public int getFirstMonth(){
+        if(hasCalendar()){
+            return monthList.first().getMonth();
         }else{
             return 0;
         }
@@ -115,7 +131,15 @@ public class Archive {
             return 0;
         }
     }
-        
+    
+    public int getLastMonth(){
+        if(hasCalendar()){
+            return monthList.last().getMonth();
+        }else{
+            return 0;
+        }
+    }
+    
     public void write(){
         if(name == null || name.isEmpty() || monthList.isEmpty()){
             return;
