@@ -65,8 +65,8 @@ public class CalendarPanel extends JPanel implements CalendarTableListener, Acti
         int lastYear = table.getLastYear();
         int lastMonth = table.getLastMonth();
         
-        System.out.println("aaa:" + firstYear + ":" + firstMonth);
-        System.out.println("aaa:" + lastYear + ":" + lastMonth);
+//        System.out.println("CalendarPanel:" + firstYear + ":" + firstMonth);
+//        System.out.println("CalendarPanel:" + lastYear + ":" + lastMonth);
         
         for(int y = firstYear; y <= lastYear; ++y){
             CalendarRowPanel row = new CalendarRowPanel();
@@ -74,16 +74,15 @@ public class CalendarPanel extends JPanel implements CalendarTableListener, Acti
             
             for(int m = 1; m <= 12; ++m){
                 if(table.hasCalendar(y, m)){
-                    System.out.println("zz y:" + y + ":" + m);
                     row.addCheckBox(y, m, this);
                 }else{
                     row.addLabel("");
                 }
             }
             JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
-            sep.setMaximumSize(new Dimension(10000, 3));
-            sep.setMinimumSize(new Dimension(1, 3));
-            sep.setPreferredSize(new Dimension(10000, 3));
+            sep.setMaximumSize(new Dimension(10000, 2));
+            sep.setMinimumSize(new Dimension(1, 2));
+            sep.setPreferredSize(new Dimension(10000, 2));
             
             
             vPanel.add(sep);
@@ -121,15 +120,15 @@ public class CalendarPanel extends JPanel implements CalendarTableListener, Acti
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(vPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(vPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 486, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(72, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(vPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(vPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(43, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     

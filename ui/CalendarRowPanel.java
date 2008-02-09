@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 public class CalendarRowPanel extends javax.swing.JPanel {
+    private static final int BOX_WIDTH = 35;
     
     public CalendarRowPanel(){
         init();
@@ -76,9 +77,9 @@ public class CalendarRowPanel extends javax.swing.JPanel {
     
     private JLabel createLabel30(String text){
         JLabel label = new JLabel(text);
-        label.setMaximumSize(new Dimension(30, 20));
-        label.setMinimumSize(new Dimension(30, 20));
-        label.setPreferredSize(new Dimension(30, 20));
+        label.setMaximumSize(new Dimension(BOX_WIDTH, 20));
+        label.setMinimumSize(new Dimension(BOX_WIDTH, 20));
+        label.setPreferredSize(new Dimension(BOX_WIDTH, 20));
 //        label.setVerticalAlignment(SwingConstants.CENTER);
         label.setHorizontalAlignment(SwingConstants.CENTER);
 //        label.setVerticalTextPosition(SwingConstants.CENTER);
@@ -87,9 +88,9 @@ public class CalendarRowPanel extends javax.swing.JPanel {
     
     private JCheckBox createCheckBox30(){
         JCheckBox checkBox = new JCheckBox();
-        checkBox.setMaximumSize(new Dimension(30, 20));
-        checkBox.setMinimumSize(new Dimension(30, 20));
-        checkBox.setPreferredSize(new Dimension(30, 20));
+        checkBox.setMaximumSize(new Dimension(BOX_WIDTH, 20));
+        checkBox.setMinimumSize(new Dimension(BOX_WIDTH, 20));
+        checkBox.setPreferredSize(new Dimension(BOX_WIDTH, 20));
         checkBox.setHorizontalAlignment(SwingConstants.CENTER);
         checkBox.setVerticalAlignment(SwingConstants.CENTER);
         return checkBox;
