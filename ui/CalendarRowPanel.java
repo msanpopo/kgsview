@@ -21,50 +21,77 @@
 
 package ui;
 
+import archive.DownloadState;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import statistics.CalendarTable;
 
-public class CalendarRowPanel extends javax.swing.JPanel {
+public class CalendarRowPanel extends JPanel implements ActionListener{
+
+    private final Color GREEN = new Color(0xcc, 0xff, 0xcc);
+    private final Color YELLOW = new Color(0xff, 0xff, 0xcc);
+    private final Color RED = new Color(0xff, 0xcc, 0xcc);
+        
     private static final int BOX_WIDTH = 35;
     
-    public CalendarRowPanel(){
-        init();
+    private CalendarTable table;
+    private int year;
+    
+    public CalendarRowPanel(CalendarTable table){
+        init(table, 0);
     }
     
-    public CalendarRowPanel(boolean header) {
+    public CalendarRowPanel(CalendarTable table, int year){
+        init(table, year);
         
-        init();        
-        
-        yearLabel.setText("");
-        if(header){
-            for(int i = 0; i < 12; ++i){
-                JLabel label = createLabel30(String.valueOf(i + 1));
-                
-                monthPanel.add(label);
+        for (int m = 1; m <= 12; ++m) {
+            if (table.hasCalendar(year, m)) {
+                DownloadState state = table.getDownloadState(year, m);
+                addCheckBox(m, state);
+            } else {
+                addLabel("");
             }
         }
     }
     
-    private void init(){
+    private void init(CalendarTable table, int year){
+        this.table = table;
+        this.year = year;
+
         initComponents();
-    }
-    
-    public void setYearLabel(String label){
-        yearLabel.setText(label);
-    }
-    
-    public void addCheckBox(int year, int month, ActionListener listener){
-        StringBuilder str = new StringBuilder();
-        str.append(year);
-        str.append("-");
-        str.append(month);
         
+        if(year != 0){
+            yearLabel.setText(Integer.toString(year));
+        }
+        
+    }
+    
+    public void addCheckBox(int month, DownloadState state){
         JCheckBox checkBox = createCheckBox30();
-        checkBox.setActionCommand(str.toString());
-        checkBox.addActionListener(listener);
+        checkBox.setActionCommand(Integer.toString(month));
+        checkBox.addActionListener(this);
+        Color color;
+        switch(state){
+            case NOT_DOWNLOADED:
+                color = RED;
+                break;
+            case DOWNLOADED_COMPLETELY:
+                color = GREEN;
+                break;
+            case DOWNLOADED_INCOMPLETELY:
+                color = YELLOW;
+                break;
+            default:
+                color = Color.RED;
+                break;
+        }
+        checkBox.setBackground(color);
         
         monthPanel.add(checkBox);
     }
@@ -94,6 +121,18 @@ public class CalendarRowPanel extends javax.swing.JPanel {
         checkBox.setHorizontalAlignment(SwingConstants.CENTER);
         checkBox.setVerticalAlignment(SwingConstants.CENTER);
         return checkBox;
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+        Object obj = e.getSource();
+        if(command != null && command.isEmpty() == false && obj instanceof JCheckBox){
+            JCheckBox checkBox = (JCheckBox)obj;
+
+            int month = Integer.parseInt(command);
+
+            table.setDownloadMark(year, month, checkBox.isSelected());
+        }
     }
     
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

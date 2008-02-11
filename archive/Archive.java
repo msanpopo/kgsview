@@ -48,6 +48,16 @@ public class Archive {
     public Archive(String name){
         this.name = name;
     }
+
+    public DownloadState getDownloadState(int year, int month) {
+        for(MonthGame mg : monthList){
+            if(mg.getYear() == year && mg.getMonth() == month){
+                return mg.getDownloadState();
+            }
+        }
+        
+        return DownloadState.NOT_DOWNLOADED;
+    }
     
     public String getName(){
         return name;

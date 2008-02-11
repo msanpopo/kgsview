@@ -22,6 +22,7 @@
 package statistics;
 
 import archive.Archive;
+import archive.DownloadState;
 import java.util.ArrayList;
 
 public class CalendarTable {
@@ -71,6 +72,10 @@ public class CalendarTable {
         if(archive != null && archive.hasCalendar(year, month)){
             archive.setDownloadMark(year, month, mark);
         }
+    }
+    
+    public DownloadState getDownloadState(int year, int month){
+        return archive.getDownloadState(year, month);
     }
     
     public int getFirstYear(){

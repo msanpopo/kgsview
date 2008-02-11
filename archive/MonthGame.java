@@ -95,6 +95,18 @@ public class MonthGame implements Comparable<MonthGame>{
         return downloadMark;
     }
     
+    public DownloadState getDownloadState(){
+        if(hasGameList()){
+            if(completed){
+                return DownloadState.DOWNLOADED_COMPLETELY;
+            }else{
+                return DownloadState.DOWNLOADED_INCOMPLETELY;
+            }
+        }else{
+            return DownloadState.NOT_DOWNLOADED;
+        }
+    }
+    
     public void setCompleted(){
         completed = true;
     }
@@ -161,9 +173,7 @@ public class MonthGame implements Comparable<MonthGame>{
             return;
         }
         
-        if(gameList == null || gameList.isEmpty() == false){
-            gameList = new ArrayList<Game>();
-        }
+        gameList = null;
         
         File csvFile = getCsvFile(topDir);
         
@@ -200,12 +210,16 @@ public class MonthGame implements Comparable<MonthGame>{
                     game = new Game(l);
                 }
                 game.checkUser(name);
+                        
+                if(gameList == null){
+                    gameList = new ArrayList<Game>();
+                }
                 gameList.add(game);
             }
            
         }catch(IOException ex){
             System.out.println("MonthGame read :: err:" + name + " :: " + ex);
-            
+            gameList = null;
         }finally{
             if(br != null){
                 try{
