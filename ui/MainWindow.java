@@ -22,7 +22,7 @@
 package ui;
 
 import action.AddMarkAction;
-import action.ArchiveUpdateAction;
+import action.DownloadAction;
 import action.ChangeUserAction;
 import action.DelMarkAction;
 import action.FilterEditAction;
@@ -65,7 +65,8 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
         addUserMenuItem.setAction(new AddMarkAction(markList));
         delUserMenuItem.setAction(new DelMarkAction(markList));
         
-        updateButton.setAction(new ArchiveUpdateAction());
+        // TODO 機能未実装
+//        updateButton.setAction(new DownloadAction());
         updateButton.setText("");
         
         userComboBox.setModel(markList);

@@ -1,7 +1,7 @@
 /*
  * KGSview - KGS(ネット碁会所)用戦績表示アプリケーション
  *
- * Copyright (C) 2006 -2007 sanpo
+ * Copyright (C) 2008 sanpo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,7 +31,7 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import archive.GameListDownloader;
+import archive.Downloader;
 import app.App;
 import app.Resource;
 import archive.Archive;
@@ -39,29 +39,18 @@ import javax.swing.SwingWorker;
 import ui.DownloadDialog;
 
 /*
- * 指定された GameList を更新する
+ * 現在の Archive のカレンダー中でダウンロードマークの付いた月のデータをダウンロードする
  */
-public class ArchiveUpdateAction  extends AbstractAction{
+public class DownloadAction  extends AbstractAction{
     private Archive archive;
     private DownloadDialog dialog;
-    private GameListDownloader downloader;
+    private Downloader downloader;
             
-    public ArchiveUpdateAction(){
-        init(null);
-    }
-    
-    public ArchiveUpdateAction(Archive archive){
-        init(archive);
-    }
-    
-    private void init(Archive archive){
-        this.archive = archive;
-        
+    public DownloadAction(){
         ClassLoader cl = this.getClass().getClassLoader();
         Icon icon  = new ImageIcon(cl.getResource("icon/stock_refresh.png"));
         
-        putValue(Action.NAME, Resource.get("update"));
-        putValue(Action.ACTION_COMMAND_KEY, "GameListUpdate");
+        putValue(Action.NAME, Resource.get("download"));
         putValue(Action.SMALL_ICON, icon);
     }
     
@@ -69,18 +58,16 @@ public class ArchiveUpdateAction  extends AbstractAction{
     public void actionPerformed(ActionEvent e){
         System.out.println("GameListUpdateAction:performed:" + e);
         
-        archive = App.getInstance().getArchive();
-        doAction();
-    }
-    
-    public void doAction(){
-        downloader = new GameListDownloader(archive);
+        App app = App.getInstance();
+        
+        archive = app.getArchive();
+        downloader = new Downloader(archive);
 
         dialog = new DownloadDialog(downloader);
         dialog.resetProgressBar(0);
-        dialog.setInfoText(Resource.get("downloadMonthTable"));
+        //dialog.setInfoText(Resource.get("downloadMonthTable"));
         
-        downloader.setOldAccount(App.getInstance().getConfig().getBooleanProperty(KgsConfig.OLD_ACCOUNT));
+        downloader.setOldAccount(app.getConfig().getBooleanProperty(KgsConfig.OLD_ACCOUNT));
         downloader.setDialog(dialog);
         downloader.addPropertyChangeListener(dialog);
         downloader.addPropertyChangeListener(new PropertyChangeListener(){
@@ -95,7 +82,7 @@ public class ArchiveUpdateAction  extends AbstractAction{
         downloader.execute();
         
         dialog.setVisible(true);
-        // 進捗ダイアログがモーダルで、スレッド終了でダイアログの閉じるので、実際にはここでとまる。
+        // 進捗ダイアログがモーダルで、スレッド終了でダイアログを閉じるので、実際にはここでとまる。
 
         Archive newArchive = downloader.getArchive();
 

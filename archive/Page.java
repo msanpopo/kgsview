@@ -1,7 +1,7 @@
 /*
  * KGSview - KGS(ネット碁会所)用戦績表示アプリケーション
  *
- * Copyright (C) 2006, 2007, 2008 sanpo
+ * Copyright (C) 2008 sanpo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,6 +29,17 @@ import java.util.regex.Pattern;
 import game.Game;
 import game.RengoGame;
 import game.ReviewGame;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * KGS Game Archives のページ
@@ -41,7 +52,17 @@ import game.ReviewGame;
  * </pre>
  */
 class Page {
+    private static final String URL_BASE = "http://www.gokgs.com/gameArchives.jsp?user=";
+    
     private String name;
+    private boolean oldAccount;
+    private TimeZone timeZone;
+    private int year;
+    private int month;
+    
+    private URL url;
+    
+    private boolean downloaded;
     
     private ArrayList<MonthGame> monthList = null;
     private MonthGame monthGame = null;
@@ -51,12 +72,135 @@ class Page {
     // 月のテーブルのみがあるパターン
     private static final Pattern p1 = Pattern.compile(".*?(<table.*?</table>).*");
     
-    public Page(String name, String html){
-        this.name = name;
-        
-        setHtml(html);
+    public Page(String name, boolean oldAccount, TimeZone timeZone){
+        init(name, oldAccount, timeZone, 0, 0);
     }
+    
+    public Page(String name, boolean oldAccount, TimeZone timeZone, int year, int month){
+        init(name, oldAccount, timeZone, year, month);
+    }
+    
+    private void init(String name, boolean oldAccount, TimeZone zone, int year, int month){
+        this.name = name;
+        this.oldAccount = oldAccount;
+        this.timeZone = zone;
+        this.year = year;
+        this.month = month;
+        this.downloaded = false;
+        
+    try{
+        if(year == 0 && month == 0){
+            if (oldAccount == true) {
+                url = new URL(URL_BASE + name + "&oldAccounts=t");
+            } else {
+                url = new URL(URL_BASE + name);
+            }
+        }else{
+            if (oldAccount == true) {
+                url = new URL(URL_BASE + name + "&oldAccounts=t&year=" + year + "&month=" + month);
+            } else {
+                url = new URL(URL_BASE + name + "&year=" + year + "&month=" + month);
+            }
+        }
+        }catch(MalformedURLException e){
+            url = null;
+            System.out.println("HtmlLoader:MalformedURLException name:" + name + " year:" + year + " month:" + month);
+        }
+        System.out.println("HtmlLoader:url:" + url);
+    }
+    
+    public void download(Downloader glloader){
+        if(downloaded || url == null){
+            return;
+        }
+        
+        HttpURLConnection connection = null;
+        BufferedReader reader = null;
+        String charset = "UTF-8";
+        StringBuffer body = new StringBuffer();
+        int contentLength = 0;
+        int downloadedSize = 0;
+        
+        try {
+            int BUFSIZE = 2048;
+            char[] buf = new char[BUFSIZE];
+            int l;
+            
+            connection = (HttpURLConnection) url.openConnection();
+            if(timeZone != null){
+                StringBuilder str = new StringBuilder();
+                str.append("timeZone=");
+                str.append(timeZone.getID());
+                System.out.println("timezone:" + str.toString());
+                connection.setRequestProperty("Cookie", str.toString());
+            }
+            connection.setConnectTimeout(10 * 1000);	// 10 sec
+            connection.setReadTimeout(10 * 1000);
+            connection.connect();  // getContentLength() で暗黙的に実行される
+            contentLength = connection.getContentLength();  // 不明の場合は -1
+            
+            showHeader(connection);
+            
+            if(glloader != null){
+                glloader.firePropertyChange("lenght", 0, contentLength);
+            }
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), charset));
+            while ((l = reader.read(buf, 0, BUFSIZE)) != -1) {
+                int olddownloaded = downloadedSize;
+                downloadedSize += l;
+                body.append(buf, 0 ,l);
+                // System.out.println("download :" +  downloadedSize + "/" + contentLength);
+                
+                if(glloader != null){
+                    glloader.firePropertyChange("downloded", olddownloaded, downloadedSize);
+                }
+            }
 
+        } catch (SocketTimeoutException e) {
+            System.out.println("HtmlLoader download : SocketTimeoutException:" + e);
+            body = new StringBuffer();
+        } catch (IOException e){
+            System.out.println("HtmlLoader download : IOException:" + e);
+            body = new StringBuffer();
+        } finally{
+            if(reader != null){
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if(connection != null){
+                connection.disconnect();
+            }
+        }
+        
+        if(body.length() == 0){
+            downloaded = false;
+        }else{
+            downloaded = true;
+            setHtml(body.toString());
+        }
+    }
+    
+    private void showHeader(HttpURLConnection con) {
+        Map<String,List<String>> headers;
+        Iterator it;
+        
+        headers = con.getHeaderFields();
+        it = headers.keySet().iterator();
+        
+        System.out.println("header");
+        while (it.hasNext()) {
+            String key = (String) it.next();
+            System.out.println(" " + key + ":" + headers.get(key));
+        }
+    }
+    
+    public boolean isDownloaded(){
+        return downloaded;
+    }
+    
     public boolean hasMonthList(){
         return (monthList != null) ? true : false;
     }
@@ -132,27 +276,27 @@ class Page {
         for (String line : lines){
             Matcher mTD = pTD.matcher(line);
             
-            int year = 0;
+            int y = 0;
             
             while (mTD.find()) {
                 String td = mTD.group();
                 System.out.println("td:" + td);
                 
-                Matcher y = pY.matcher(td);
+                Matcher my = pY.matcher(td);
                 Matcher m0 = pM0.matcher(td);
                 Matcher m1 = pM1.matcher(td);
                 
-                if(y.matches()){
-                    year = Integer.parseInt(y.group(1));
+                if(my.matches()){
+                    y = Integer.parseInt(my.group(1));
                     
                 }else if (m0.matches()) {
-                    int month = monthToInt(m0.group(2));
-                    MonthGame mg = new MonthGame(name, year, month);
+                    int m = monthToInt(m0.group(2));
+                    MonthGame mg = new MonthGame(name, y, m);
                     list.add(mg);
                     
                 }else if(m1.matches()){
-                    int month = monthToInt(m1.group(1));
-                    monthGame = new MonthGame(name, year, month);
+                    int m = monthToInt(m1.group(1));
+                    monthGame = new MonthGame(name, y, m);
                     monthGame.setGameList(createGameList(gameTable));
                     list.add(monthGame);  
                 }
@@ -261,12 +405,13 @@ class Page {
     
     private int monthToInt(String str){
         String[] monthArray = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-        int month = 1;
-        for(String m : monthArray){
-            if(m.equals(str)){
-                return month;
+        int m = 1;
+        
+        for(String ma : monthArray){
+            if(ma.equals(str)){
+                return m;
             }
-            month += 1;
+            m += 1;
         }
         
         System.err.println("error: Html.monthToInt:" + str);
@@ -289,18 +434,18 @@ class Page {
     }
     
     private String getSgfUrl(String str){
-        String url;
+        String sgfUrl;
         Pattern p = Pattern.compile("http://.*\\.sgf");
         Matcher m = p.matcher(str);
         
         if(m.find()){
-            url = m.group();
+            sgfUrl = m.group();
         }else if(str.equals("No")){
-            url = "No";
+            sgfUrl = "No";
         }else{
-            url = null;
+            sgfUrl = null;
         }
         
-        return url;
+        return sgfUrl;
     }
 }

@@ -228,8 +228,9 @@ public class Archive {
      * 月リストの更新と現在の月の対局リストの再取得を行う。（年と月を指定せずに表示する web ページ）
      */
     public void update(){
-        PageLoader loader = new PageLoader(name, false, TimeZone.getDefault());
-        Page page = loader.download(null);
+        // TODO タイムゾーン決め打ち
+        Page page = new Page(name, false, TimeZone.getDefault());
+        page.download(null);
         
         if(page.hasMonthList()){
             for(MonthGame mg : page.getMonthList()){
@@ -250,7 +251,7 @@ public class Archive {
         }
     }
     
-    public void download(GameListDownloader downloader){
+    public void download(Downloader downloader){
         int nDownload = 0;
         int nCurrent = 0;
         for(MonthGame mg : monthList){
@@ -260,16 +261,21 @@ public class Archive {
         }
         
         for(MonthGame mg : monthList){
+            if(mg.getDownloadMark() == false){
+                continue;
+            }
+            
             nCurrent += 1;
             
             String msg = Resource.get("downloading") + " " + nCurrent + " / " + nDownload;
             downloader.setDownloadStatus(msg);
             
-            boolean success = mg.download(downloader);
-            
-            if(success && mg != monthList.last()){
-                mg.setCompleted();
-            }
+            // TODO テスト中
+//            boolean success = mg.download(downloader);
+//            
+//            if(success && mg != monthList.last()){
+//                mg.setCompleted();
+//            }
             
             if(downloader.isCanceled()){
                 System.out.println("Archive.download : cancel");

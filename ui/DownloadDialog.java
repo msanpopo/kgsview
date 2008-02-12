@@ -1,7 +1,7 @@
 /*
  * KGSview - KGS(ネット碁会所)用戦績表示アプリケーション
  *
- * Copyright (C) 2006 -2007 sanpo
+ * Copyright (C) 2006, 2007, 2008 sanpo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@
 
 package ui;
 
-import archive.GameListDownloader;
+import archive.Downloader;
 import app.App;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,16 +40,15 @@ import javax.swing.JProgressBar;
 
 import app.Resource;
 
-@SuppressWarnings("serial")
 public class DownloadDialog extends JDialog implements ActionListener, PropertyChangeListener{
     private JOptionPane optionPane;
     private JButton cancelButton;
     private JLabel infoLabel;
     private JProgressBar progressBar;
     
-    private GameListDownloader loader;
+    private Downloader loader;
     
-    public DownloadDialog(GameListDownloader loader){
+    public DownloadDialog(Downloader loader){
         super(App.getInstance().getMainWindow(), Resource.get("downloading"), true);
 
         this.loader = loader;

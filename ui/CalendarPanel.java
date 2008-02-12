@@ -25,6 +25,9 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+
+import action.DownloadAction;
+import app.Resource;
 import statistics.CalendarTable;
 import statistics.CalendarTableListener;
 
@@ -44,10 +47,14 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
         
         initComponents();
 
+        downloadButton.setText(Resource.get("download"));
+        downloadButton.setAction(new DownloadAction());
+        
         rebuild(table);
     }
 
     public void calendarTableChanged(CalendarTable table) {
+        this.table = table;
         rebuild(table);
     }
     
@@ -55,6 +62,7 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
         vPanel.removeAll();
 
         vPanel.add(header);
+        vPanel.add(createSeparator());
         
         if(table.hasCalendar() == false){
             return;
@@ -65,35 +73,39 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
         int lastYear = table.getLastYear();
         int lastMonth = table.getLastMonth();
         
-//        System.out.println("CalendarPanel:" + firstYear + ":" + firstMonth);
-//        System.out.println("CalendarPanel:" + lastYear + ":" + lastMonth);
+        System.out.println("CalendarPanel:" + firstYear + ":" + firstMonth);
+        System.out.println("CalendarPanel:" + lastYear + ":" + lastMonth);
         
         for(int y = firstYear; y <= lastYear; ++y){
             CalendarRowPanel row = new CalendarRowPanel(table, y);
             
-            JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
-            sep.setMaximumSize(new Dimension(10000, 2));
-            sep.setMinimumSize(new Dimension(1, 2));
-            sep.setPreferredSize(new Dimension(10000, 2));
-            
-            vPanel.add(sep);
             vPanel.add(row);
+            vPanel.add(createSeparator());
         }
         
         repaint();
+    }
+    
+    private JSeparator createSeparator(){
+        JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
+        sep.setMaximumSize(new Dimension(10000, 2));
+        sep.setMinimumSize(new Dimension(1, 2));
+        sep.setPreferredSize(new Dimension(10000, 2));
+            
+        return sep;
     }
     
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         vPanel = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        downloadButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         vPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         vPanel.setLayout(new javax.swing.BoxLayout(vPanel, javax.swing.BoxLayout.Y_AXIS));
 
-        jButton1.setText("jButton1");
+        downloadButton.setText("Download");
 
         jButton2.setText("jButton2");
 
@@ -104,19 +116,19 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(vPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(vPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(downloadButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(downloadButton)
                     .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(vPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
@@ -126,7 +138,7 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton downloadButton;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel vPanel;
     // End of variables declaration//GEN-END:variables

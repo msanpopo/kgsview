@@ -46,7 +46,6 @@
     <Component class="javax.swing.JLabel" name="yearLabel">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="text" type="java.lang.String" value="0000"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="monthPanel">

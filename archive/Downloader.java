@@ -27,22 +27,18 @@ import javax.swing.SwingWorker;
 
 import ui.DownloadDialog;
 
-public class GameListDownloader extends SwingWorker<Archive, String>{
+public class Downloader extends SwingWorker<Archive, String>{
     private Archive archive;
     private boolean oldAccount;
     
     private DownloadDialog dialog;
-    
-    private int nCurrent;
+
     private boolean canceled;
     
-    public GameListDownloader(Archive archive) {
+    public Downloader(Archive archive) {
         this.archive = archive;
-        
         this.oldAccount = false;
-        
-        nCurrent = 0;
-        canceled = false;
+        this.canceled = false;
     }
 
     public void setOldAccount(boolean bool){

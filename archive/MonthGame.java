@@ -231,17 +231,17 @@ public class MonthGame implements Comparable<MonthGame>{
         }
     }
     
-    public boolean download(GameListDownloader downloader){
+    public boolean download(Downloader downloader){
         if(downloadMark == false){
             return false;
         }
         
         downloadMark = false;
         
-        PageLoader loader = new PageLoader(name, false, TimeZone.getDefault(), year, month);
-        Page page = loader.download(downloader);
+        Page page = new Page(name, false, TimeZone.getDefault(), year, month);
+        page.download(downloader);
         
-        if(page == null){
+        if(page.isDownloaded() == false){
             return false;
         }else{
             gameList = page.getMonthGame().gameList;

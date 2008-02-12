@@ -38,7 +38,8 @@ public class CalendarRowPanel extends JPanel implements ActionListener{
     private final Color YELLOW = new Color(0xff, 0xff, 0xcc);
     private final Color RED = new Color(0xff, 0xcc, 0xcc);
         
-    private static final int BOX_WIDTH = 35;
+    private static final int BOX_WIDTH = 40;
+    private static final int BOX_HEIGHT = 30;
     
     private CalendarTable table;
     private int year;
@@ -69,7 +70,6 @@ public class CalendarRowPanel extends JPanel implements ActionListener{
         if(year != 0){
             yearLabel.setText(Integer.toString(year));
         }
-        
     }
     
     public void addCheckBox(int month, DownloadState state){
@@ -104,9 +104,9 @@ public class CalendarRowPanel extends JPanel implements ActionListener{
     
     private JLabel createLabel30(String text){
         JLabel label = new JLabel(text);
-        label.setMaximumSize(new Dimension(BOX_WIDTH, 20));
-        label.setMinimumSize(new Dimension(BOX_WIDTH, 20));
-        label.setPreferredSize(new Dimension(BOX_WIDTH, 20));
+        label.setMaximumSize(new Dimension(BOX_WIDTH, BOX_HEIGHT));
+        label.setMinimumSize(new Dimension(BOX_WIDTH, BOX_HEIGHT));
+        label.setPreferredSize(new Dimension(BOX_WIDTH, BOX_HEIGHT));
 //        label.setVerticalAlignment(SwingConstants.CENTER);
         label.setHorizontalAlignment(SwingConstants.CENTER);
 //        label.setVerticalTextPosition(SwingConstants.CENTER);
@@ -115,9 +115,9 @@ public class CalendarRowPanel extends JPanel implements ActionListener{
     
     private JCheckBox createCheckBox30(){
         JCheckBox checkBox = new JCheckBox();
-        checkBox.setMaximumSize(new Dimension(BOX_WIDTH, 20));
-        checkBox.setMinimumSize(new Dimension(BOX_WIDTH, 20));
-        checkBox.setPreferredSize(new Dimension(BOX_WIDTH, 20));
+        checkBox.setMaximumSize(new Dimension(BOX_WIDTH, BOX_HEIGHT));
+        checkBox.setMinimumSize(new Dimension(BOX_WIDTH, BOX_HEIGHT));
+        checkBox.setPreferredSize(new Dimension(BOX_WIDTH, BOX_HEIGHT));
         checkBox.setHorizontalAlignment(SwingConstants.CENTER);
         checkBox.setVerticalAlignment(SwingConstants.CENTER);
         return checkBox;
@@ -146,7 +146,6 @@ public class CalendarRowPanel extends JPanel implements ActionListener{
         setMinimumSize(new java.awt.Dimension(0, 30));
 
         yearLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        yearLabel.setText("0000");
 
         monthPanel.setLayout(new javax.swing.BoxLayout(monthPanel, javax.swing.BoxLayout.LINE_AXIS));
 
