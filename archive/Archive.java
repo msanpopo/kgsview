@@ -89,25 +89,23 @@ public class Archive {
         int lastYear = monthList.last().getYear();
         int lastMonth = monthList.last().getMonth();
         
-        if(year < firstYear){
-            return false;
-        }else if(year == firstYear){
-            if(month >= firstMonth){
-                return true;
-            }else{
-                return false;
-            }
-        }else if(year > firstYear && year < lastYear){
-             return true;
-        }else if(year == lastYear){
-            if(month <= lastMonth){
-                return true;
-            }else{
-                return false;
-            }
-        }else{
-            return false;
+        boolean retval = false;
+        
+        if(year == firstYear && month >= firstMonth){
+            retval = true;
         }
+        
+        if(year > firstYear && year < lastYear){
+            retval = true;
+        }
+        
+        if(year == lastYear && month <= lastMonth){
+            retval = true;
+        }else{
+            retval = false; // データのある月が１月から12月までの間におさまっている時にここにくる
+        }
+        
+        return retval;
     }
     
     public void setDownloadMark(int year, int month, boolean mark){
@@ -270,12 +268,11 @@ public class Archive {
             String msg = Resource.get("downloading") + " " + nCurrent + " / " + nDownload;
             downloader.setDownloadStatus(msg);
             
-            // TODO テスト中
-//            boolean success = mg.download(downloader);
-//            
-//            if(success && mg != monthList.last()){
-//                mg.setCompleted();
-//            }
+            boolean success = mg.download(downloader);
+            
+            if(success && mg != monthList.last()){
+                mg.setCompleted();
+            }
             
             if(downloader.isCanceled()){
                 System.out.println("Archive.download : cancel");
