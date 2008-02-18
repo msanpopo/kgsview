@@ -28,8 +28,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 
 import archive.Downloader;
 import app.App;
@@ -47,11 +45,11 @@ public class DownloadAction  extends AbstractAction{
     private Downloader downloader;
             
     public DownloadAction(){
-        ClassLoader cl = this.getClass().getClassLoader();
-        Icon icon  = new ImageIcon(cl.getResource("icon/stock_refresh.png"));
+//        ClassLoader cl = this.getClass().getClassLoader();
+//        Icon icon  = new ImageIcon(cl.getResource("icon/stock_refresh.png"));
         
         putValue(Action.NAME, Resource.get("download"));
-        putValue(Action.SMALL_ICON, icon);
+//        putValue(Action.SMALL_ICON, icon);
     }
     
     @Override

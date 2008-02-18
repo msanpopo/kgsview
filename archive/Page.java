@@ -157,10 +157,10 @@ class Page {
             }
 
         } catch (SocketTimeoutException e) {
-            System.out.println("HtmlLoader download : SocketTimeoutException:" + e);
+            System.out.println("Page.download : SocketTimeoutException:" + e);
             body = new StringBuffer();
         } catch (IOException e){
-            System.out.println("HtmlLoader download : IOException:" + e);
+            System.out.println("Page.download : IOException:" + e);
             body = new StringBuffer();
         } finally{
             if(reader != null){
@@ -221,7 +221,7 @@ class Page {
         String gameTable;
         String monthTable;
         
-        System.out.println("html::" + html);
+//        System.out.println("html::" + html);
                 
         if(html == null || html.length() == 0){
             System.err.println("Html.download fail");
@@ -280,7 +280,7 @@ class Page {
             
             while (mTD.find()) {
                 String td = mTD.group();
-                System.out.println("td:" + td);
+//                System.out.println("td:" + td);
                 
                 Matcher my = pY.matcher(td);
                 Matcher m0 = pM0.matcher(td);

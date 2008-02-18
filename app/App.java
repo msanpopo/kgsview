@@ -193,4 +193,9 @@ public class App{
         //return TimeZone.getTimeZone("JST");
         return TimeZone.getTimeZone(config.getProperty(KgsConfig.TIME_ZONE));
     }
+    
+    public void setStatusText(String text){
+        System.out.println("App.setStatusText:" + text);
+        window.setStatusText(text);
+    }
 }

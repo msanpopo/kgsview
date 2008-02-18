@@ -83,14 +83,11 @@ public class SettingPanel extends javax.swing.JPanel{
                 break;
             }
         }
-        
-        timeZoneTextField.setText(config.getProperty(KgsConfig.TIME_ZONE));
     }
     
     private void save(){
         System.out.println("SettingPanel.save:  config:" + config);
         System.out.println("command :" + commandField.getText());
-        System.out.println("timezone:" + timeZoneTextField.getText());
         
         config.setProperty(KgsConfig.SGF_APP_PATH, commandField.getText());
         
@@ -98,18 +95,16 @@ public class SettingPanel extends javax.swing.JPanel{
         LookAndFeelInfo info = lookFeelMap.get(lf);
         config.setProperty(KgsConfig.LOOK_AND_FEEL, info.getClassName());
         
-        config.setProperty(KgsConfig.TIME_ZONE, timeZoneTextField.getText());
     }
     
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         sgsViewerPanel = new javax.swing.JPanel();
         commandLabel = new javax.swing.JLabel();
         commandField = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         lookAndFeelComboBox = new javax.swing.JComboBox();
-        jPanel1 = new javax.swing.JPanel();
-        timeZoneTextField = new javax.swing.JTextField();
 
         addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
@@ -121,8 +116,10 @@ public class SettingPanel extends javax.swing.JPanel{
             }
         });
 
-        sgsViewerPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(java.util.ResourceBundle.getBundle("app/resource/Resource").getString("sgfViewer")));
-        commandLabel.setText(java.util.ResourceBundle.getBundle("app/resource/Resource").getString("commandLabel"));
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("app/resource/Resource"); // NOI18N
+        sgsViewerPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("sgfViewer"))); // NOI18N
+
+        commandLabel.setText(bundle.getString("commandLabel")); // NOI18N
 
         javax.swing.GroupLayout sgsViewerPanelLayout = new javax.swing.GroupLayout(sgsViewerPanel);
         sgsViewerPanel.setLayout(sgsViewerPanelLayout);
@@ -132,7 +129,7 @@ public class SettingPanel extends javax.swing.JPanel{
                 .addContainerGap()
                 .addComponent(commandLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(commandField, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                .addComponent(commandField, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                 .addContainerGap())
         );
         sgsViewerPanelLayout.setVerticalGroup(
@@ -145,7 +142,8 @@ public class SettingPanel extends javax.swing.JPanel{
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(java.util.ResourceBundle.getBundle("app/resource/Resource").getString("lookAndFeel")));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("lookAndFeel"))); // NOI18N
+
         lookAndFeelComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 lookAndFeelComboBoxActionPerformed(evt);
@@ -169,32 +167,12 @@ public class SettingPanel extends javax.swing.JPanel{
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(java.util.ResourceBundle.getBundle("app/resource/Resource").getString("timeZone")));
-        timeZoneTextField.setText("jTextField1");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(timeZoneTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(timeZoneTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(sgsViewerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,8 +180,7 @@ public class SettingPanel extends javax.swing.JPanel{
                 .addComponent(sgsViewerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -222,10 +199,8 @@ public class SettingPanel extends javax.swing.JPanel{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField commandField;
     private javax.swing.JLabel commandLabel;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JComboBox lookAndFeelComboBox;
     private javax.swing.JPanel sgsViewerPanel;
-    private javax.swing.JTextField timeZoneTextField;
     // End of variables declaration//GEN-END:variables
 }

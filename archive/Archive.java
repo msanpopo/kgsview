@@ -91,20 +91,17 @@ public class Archive {
         
         boolean retval = false;
         
-        if(year == firstYear && month >= firstMonth){
+        if(year >= firstYear && year <= lastYear){
             retval = true;
+            
+            if(year == firstYear && month < firstMonth){
+                retval = false;
+            }else if(year == lastYear && month > lastMonth){
+                retval = false;
+            }
         }
         
-        if(year > firstYear && year < lastYear){
-            retval = true;
-        }
-        
-        if(year == lastYear && month <= lastMonth){
-            retval = true;
-        }else{
-            retval = false; // データのある月が１月から12月までの間におさまっている時にここにくる
-        }
-        
+//        System.out.println("Archive.hasCalendar:" + year + "/" + month + " : " + retval);
         return retval;
     }
     
@@ -114,6 +111,15 @@ public class Archive {
                 mg.setDownloadMark(mark);
             }
         }
+    }
+    
+    public boolean getDownloadMark(int year, int month){
+        for(MonthGame mg : monthList){
+            if(mg.getYear() == year && mg.getMonth() == month){
+                return mg.getDownloadMark();
+            }
+        }
+        return false;
     }
     
     public int getFirstYear(){
@@ -233,6 +239,7 @@ public class Archive {
         if(page.hasMonthList()){
             for(MonthGame mg : page.getMonthList()){
                 if(getMonthGame(mg.getYear(), mg.getMonth()) == null){
+                    mg.setDownloadMark(true);
                     monthList.add(mg);
                 }
             }

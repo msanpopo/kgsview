@@ -132,7 +132,7 @@ public class DownloadDialog extends JDialog implements ActionListener, PropertyC
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propName = evt.getPropertyName();
-        System.out.println("DownloadDialog.propertyChange:" + propName + " value:" + evt.getNewValue());
+//        System.out.println("DownloadDialog.propertyChange:" + propName + " value:" + evt.getNewValue());
         
         if ("lenght".equals(propName)) {
             int lenght = (Integer)evt.getNewValue();

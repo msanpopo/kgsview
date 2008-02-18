@@ -23,6 +23,7 @@ package ui;
 
 import archive.DownloadState;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,7 +55,8 @@ public class CalendarRowPanel extends JPanel implements ActionListener{
         for (int m = 1; m <= 12; ++m) {
             if (table.hasCalendar(year, m)) {
                 DownloadState state = table.getDownloadState(year, m);
-                addCheckBox(m, state);
+                boolean mark = table.getDownloadMark(year, m);
+                addCheckBox(m, state, mark);
             } else {
                 addLabel("");
             }
@@ -68,14 +70,24 @@ public class CalendarRowPanel extends JPanel implements ActionListener{
         initComponents();
         
         if(year != 0){
-            yearLabel.setText(Integer.toString(year));
+            JCheckBox checkBox = new JCheckBox();
+            checkBox.setMaximumSize(new Dimension(BOX_WIDTH, BOX_HEIGHT));
+            checkBox.setMinimumSize(new Dimension(BOX_WIDTH, BOX_HEIGHT));
+            checkBox.setPreferredSize(new Dimension(BOX_WIDTH, BOX_HEIGHT));
+            checkBox.setActionCommand(Integer.toString(year));
+            checkBox.addActionListener(this);
+            JLabel label = new JLabel(Integer.toString(year));
+            yearPanel.add(checkBox);
+            yearPanel.add(label);
         }
     }
     
-    public void addCheckBox(int month, DownloadState state){
+    private void addCheckBox(int month, DownloadState state, boolean mark){
         JCheckBox checkBox = createCheckBox30();
         checkBox.setActionCommand(Integer.toString(month));
         checkBox.addActionListener(this);
+        checkBox.setSelected(mark);
+
         Color color;
         switch(state){
             case NOT_DOWNLOADED:
@@ -128,28 +140,53 @@ public class CalendarRowPanel extends JPanel implements ActionListener{
         Object obj = e.getSource();
         if(command != null && command.isEmpty() == false && obj instanceof JCheckBox){
             JCheckBox checkBox = (JCheckBox)obj;
+            boolean selected = checkBox.isSelected();
+            
+            if(command.equals(Integer.toString(year))){
+                for(Component c : monthPanel.getComponents()){
+                    c.setEnabled(!selected);
+                    if(c instanceof JCheckBox){
+                        JCheckBox cb = (JCheckBox)c;
+                        cb.setSelected(selected);
+                    }
+                }
+            }else{
+                int month = Integer.parseInt(command);
 
-            int month = Integer.parseInt(command);
-
-            table.setDownloadMark(year, month, checkBox.isSelected());
+                table.setDownloadMark(year, month, selected);
+            }
         }
     }
     
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        yearLabel = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         monthPanel = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
+        yearPanel = new javax.swing.JPanel();
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         setMaximumSize(new java.awt.Dimension(32767, 30));
         setMinimumSize(new java.awt.Dimension(0, 30));
 
-        yearLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
         monthPanel.setLayout(new javax.swing.BoxLayout(monthPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        yearPanel.setMinimumSize(new java.awt.Dimension(0, 0));
+        yearPanel.setPreferredSize(new java.awt.Dimension(0, 0));
+        yearPanel.setLayout(new javax.swing.BoxLayout(yearPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -157,24 +194,25 @@ public class CalendarRowPanel extends JPanel implements ActionListener{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(yearLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(yearPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(monthPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(monthPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(yearLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
             .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
             .addComponent(monthPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+            .addComponent(yearPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel monthPanel;
-    private javax.swing.JLabel yearLabel;
+    private javax.swing.JPanel yearPanel;
     // End of variables declaration//GEN-END:variables
 }

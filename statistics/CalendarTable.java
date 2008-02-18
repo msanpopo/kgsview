@@ -74,6 +74,14 @@ public class CalendarTable {
         }
     }
     
+    public boolean getDownloadMark(int year, int month){
+        if(archive != null && archive.hasCalendar(year, month)){
+            return archive.getDownloadMark(year, month);
+        }
+        
+        return false;
+    }
+    
     public DownloadState getDownloadState(int year, int month){
         return archive.getDownloadState(year, month);
     }

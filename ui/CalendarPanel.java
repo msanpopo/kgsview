@@ -100,14 +100,11 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
 
         vPanel = new javax.swing.JPanel();
         downloadButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
 
         vPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         vPanel.setLayout(new javax.swing.BoxLayout(vPanel, javax.swing.BoxLayout.Y_AXIS));
 
         downloadButton.setText("Download");
-
-        jButton2.setText("jButton2");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -117,19 +114,14 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(vPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(downloadButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)))
+                    .addComponent(downloadButton))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(downloadButton)
-                    .addComponent(jButton2))
+                .addComponent(downloadButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(vPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                 .addContainerGap())
@@ -139,7 +131,6 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton downloadButton;
-    private javax.swing.JButton jButton2;
     private javax.swing.JPanel vPanel;
     // End of variables declaration//GEN-END:variables
 }
