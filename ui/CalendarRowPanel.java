@@ -150,6 +150,10 @@ public class CalendarRowPanel extends JPanel implements ActionListener{
                         cb.setSelected(selected);
                     }
                 }
+                for(int i = 1; i <= 12; ++i){
+                    table.setDownloadMark(year, i, selected);
+                }
+                
             }else{
                 int month = Integer.parseInt(command);
 

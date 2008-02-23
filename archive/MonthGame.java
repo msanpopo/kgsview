@@ -236,18 +236,20 @@ public class MonthGame implements Comparable<MonthGame>{
             return false;
         }
         
+        System.out.println("MonthGame.download:"+ year + "/" + month);
+        
         downloadMark = false;
         
         Page page = new Page(name, false, TimeZone.getDefault(), year, month);
         page.download(downloader);
         
-        if(page.isDownloaded() == false){
-            return false;
-        }else{
+        boolean downloaded = page.isDownloaded();
+        
+        if(downloaded){
             gameList = page.getMonthGame().gameList;
-            
-            return true;
         }
+        
+        return downloaded;
     }
     
     private File getCsvFile(File topDir){       

@@ -58,13 +58,13 @@ public class Downloader extends SwingWorker<Archive, String>{
     }
     
     public Archive getArchive(){
-        try {
-            archive = get();
-        } catch (ExecutionException ex) {
-            ex.printStackTrace();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+//        try {
+//            archive = get();
+//        } catch (ExecutionException ex) {
+//            ex.printStackTrace();
+//        } catch (InterruptedException ex) {
+//            ex.printStackTrace();
+//        }
         
         return archive;
     }

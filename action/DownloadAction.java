@@ -85,7 +85,7 @@ public class DownloadAction  extends AbstractAction{
         Archive newArchive = downloader.getArchive();
 
         newArchive.write();
-        
+
         App.getInstance().setArchive(newArchive);
     }
 }

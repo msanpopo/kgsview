@@ -160,8 +160,17 @@ public class App{
     
     public void setArchive(Archive newArchive){
         archive = newArchive;
-        
         renewStatistic();
+        
+        // 描画のしくみがよくわからない。
+        // 下の repaint がないと、ダウンロード数がゼロのダウンロードを実行した時に
+        // カレンダーが再描画されない。
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                window.repaint();
+            }
+        });
     }
     
     public void renewStatistic(){

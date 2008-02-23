@@ -56,6 +56,7 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
     public void calendarTableChanged(CalendarTable table) {
         this.table = table;
         rebuild(table);
+        repaint();
     }
     
     private void rebuild(CalendarTable table){
@@ -77,13 +78,12 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
         System.out.println("CalendarPanel:" + lastYear + ":" + lastMonth);
         
         for(int y = firstYear; y <= lastYear; ++y){
+            System.out.println("y:" + y);
             CalendarRowPanel row = new CalendarRowPanel(table, y);
-            
             vPanel.add(row);
             vPanel.add(createSeparator());
         }
-        
-        repaint();
+
     }
     
     private JSeparator createSeparator(){
@@ -102,6 +102,7 @@ public class CalendarPanel extends JPanel implements CalendarTableListener{
         downloadButton = new javax.swing.JButton();
 
         vPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        vPanel.setDoubleBuffered(false);
         vPanel.setLayout(new javax.swing.BoxLayout(vPanel, javax.swing.BoxLayout.Y_AXIS));
 
         downloadButton.setText("Download");

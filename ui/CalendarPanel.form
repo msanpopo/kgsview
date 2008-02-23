@@ -45,6 +45,7 @@
             <EtchetBorder/>
           </Border>
         </Property>
+        <Property name="doubleBuffered" type="boolean" value="false"/>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
