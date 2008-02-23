@@ -54,7 +54,11 @@ public class MonthGame implements Comparable<MonthGame>{
     private boolean downloadMark;
         
     private ArrayList<Game> gameList = null;
-    
+    /*
+     * ダウンロード前         ：gameList = null 
+     * ダウンロード後（中途半端）：gameList != null && completed == false
+     * ダウンロード後（完全）   ：gameList != null && completed == true;
+     */
     public MonthGame(String name, int year, int month){
         this.name = name;
         this.year = year;
@@ -81,8 +85,10 @@ public class MonthGame implements Comparable<MonthGame>{
     
     public void setGameList(ArrayList<Game> newList){
         gameList = newList;
-        for(Game g : gameList){
-            g.checkUser(name);
+        if(gameList != null){
+            for(Game g : gameList){
+                g.checkUser(name);
+            }
         }
     }
     
@@ -242,13 +248,14 @@ public class MonthGame implements Comparable<MonthGame>{
         
         Page page = new Page(name, false, TimeZone.getDefault(), year, month);
         page.download(downloader);
-        
+
         boolean downloaded = page.isDownloaded();
-        
+
         if(downloaded){
             gameList = page.getMonthGame().gameList;
         }
         
+        System.out.println("MonthGame.download: downloaded:" + downloaded);
         return downloaded;
     }
     

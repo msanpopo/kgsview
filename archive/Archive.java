@@ -266,6 +266,8 @@ public class Archive {
         }
         
         for(MonthGame mg : monthList){
+            System.out.println("Archive.download:" + mg.getYear() + "/" + mg.getMonth());
+            
             if(mg.getDownloadMark() == false){
                 continue;
             }
@@ -275,7 +277,11 @@ public class Archive {
             String msg = Resource.get("downloading") + " " + nCurrent + " / " + nDownload;
             downloader.setDownloadStatus(msg);
             
+            System.out.println("Archive: before download");
+            
             boolean success = mg.download(downloader);
+            
+            System.out.println("Archive.download: success:" + success);
             
             if(success && mg != monthList.last()){
                 mg.setCompleted();

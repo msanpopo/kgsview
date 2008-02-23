@@ -21,8 +21,8 @@
 
 package archive;
 
+import app.App;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 
 import ui.DownloadDialog;
@@ -57,18 +57,6 @@ public class Downloader extends SwingWorker<Archive, String>{
         return canceled;
     }
     
-    public Archive getArchive(){
-//        try {
-//            archive = get();
-//        } catch (ExecutionException ex) {
-//            ex.printStackTrace();
-//        } catch (InterruptedException ex) {
-//            ex.printStackTrace();
-//        }
-        
-        return archive;
-    }
-    
     @Override
     protected void process(List<String> chunks){
         int size = chunks.size();
@@ -76,11 +64,22 @@ public class Downloader extends SwingWorker<Archive, String>{
         dialog.setInfoText(chunks.get(size - 1));
     }
     
-    @Override
     public Archive doInBackground() {
         archive.download(this);
+        archive.write();
         
         return archive;
+    }
+    
+    @Override
+    protected void done(){
+        System.out.println("Downloader.done");
+        
+        if(dialog != null){
+            dialog.setVisible(false);
+            dialog.dispose();
+        }
+        App.getInstance().setArchive(archive);
     }
     
     public void setDownloadStatus(String text){

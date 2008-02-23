@@ -126,7 +126,7 @@ class Page {
                 StringBuilder str = new StringBuilder();
                 str.append("timeZone=");
                 str.append(timeZone.getID());
-                System.out.println("timezone:" + str.toString());
+//                System.out.println("timezone:" + str.toString());
                 connection.setRequestProperty("Cookie", str.toString());
             }
             connection.setConnectTimeout(10 * 1000);	// 10 sec
@@ -176,6 +176,8 @@ class Page {
             downloaded = true;
             setHtml(body.toString());
         }
+        
+        System.out.println("Page.download: done");
     }
 
     private void showHeader(HttpURLConnection con) {
@@ -219,7 +221,7 @@ class Page {
 //        System.out.println("html::" + html);
 
         if (html == null || html.length() == 0) {
-            System.err.println("Html.download fail");
+            System.err.println("Page.setHtml fail");
             html = null;
             return;
         }
@@ -250,6 +252,7 @@ class Page {
             monthList = createMonthList(monthTable, gameTable);
         }
     }
+    
     private static final Pattern pTD = Pattern.compile("<td.*?</td>");	// <td> 要素を抜き出す
     private static final Pattern pY = Pattern.compile("<td>([0-9]{4})</td>");
     private static final Pattern pM0 = Pattern.compile("<td><a href=\"(.*?)\">([a-zA-Z]{3})</a></td>");
@@ -300,16 +303,16 @@ class Page {
     }
 
     private ArrayList<Game> createGameList(String gameTable) {
-        ArrayList<Game> gameList;
+        ArrayList<Game> gameList = new ArrayList<Game>();
         ArrayList<String> list;
         boolean firstLine = true;
         Pattern p7 = Pattern.compile("<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>");
         Pattern p6 = Pattern.compile("<tr><td>(.*?)</td><td colspan=\"2\">(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>");
 
         if (gameTable == null) {
-            return null;
+            return gameList;
         }
-        gameList = new ArrayList<Game>();
+
         list = lineAnalyse(gameTable);
 
         for (String line : list) {

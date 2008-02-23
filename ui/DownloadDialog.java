@@ -39,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import app.Resource;
+import javax.swing.SwingWorker;
 
 public class DownloadDialog extends JDialog implements ActionListener, PropertyChangeListener{
     private JOptionPane optionPane;

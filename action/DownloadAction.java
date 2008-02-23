@@ -68,24 +68,8 @@ public class DownloadAction  extends AbstractAction{
         downloader.setOldAccount(app.getConfig().getBooleanProperty(KgsConfig.OLD_ACCOUNT));
         downloader.setDialog(dialog);
         downloader.addPropertyChangeListener(dialog);
-        downloader.addPropertyChangeListener(new PropertyChangeListener(){
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if ("state".equals(evt.getPropertyName()) && SwingWorker.StateValue.DONE == evt.getNewValue()) {
-                    dialog.setVisible(false);
-                    dialog.dispose();
-                }
-            }
-        });
         downloader.execute();
         
         dialog.setVisible(true);
-        // 進捗ダイアログがモーダルで、スレッド終了でダイアログを閉じるので、実際にはここでとまる。
-
-        Archive newArchive = downloader.getArchive();
-
-        newArchive.write();
-
-        App.getInstance().setArchive(newArchive);
     }
 }
