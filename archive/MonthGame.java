@@ -152,7 +152,7 @@ public class MonthGame implements Comparable<MonthGame>{
     }
     
     public void write(File topDir){
-        if(name == null || name.isEmpty() || gameList == null || gameList.isEmpty()){
+        if(name == null || name.isEmpty() || gameList == null){
             return;
         }
         
@@ -165,7 +165,7 @@ public class MonthGame implements Comparable<MonthGame>{
                 game.write(pw);
             }
         }catch(IOException ex){
-            System.out.println("MonthGame write :: error:" + ex);
+            System.err.println("MonthGame write :: error:" + ex);
         }finally{
             if(pw != null){
                 pw.flush();
@@ -178,12 +178,14 @@ public class MonthGame implements Comparable<MonthGame>{
         if(name == null || name.isEmpty()){
             return;
         }
-        
-        gameList = null;
-        
+
         File csvFile = getCsvFile(topDir);
         
-        if(csvFile.exists() == false){
+        if(csvFile.exists()){
+            gameList = new ArrayList<Game>();
+        }else{
+            gameList = null;
+            completed = false;
             return;
         }
         
@@ -217,15 +219,13 @@ public class MonthGame implements Comparable<MonthGame>{
                 }
                 game.checkUser(name);
                         
-                if(gameList == null){
-                    gameList = new ArrayList<Game>();
-                }
                 gameList.add(game);
             }
            
         }catch(IOException ex){
-            System.out.println("MonthGame read :: err:" + name + " :: " + ex);
+            System.err.println("MonthGame read :: err:" + name + " :: " + ex);
             gameList = null;
+            completed = false;
         }finally{
             if(br != null){
                 try{
