@@ -24,8 +24,6 @@ package action;
 import app.KgsConfig;
 
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
@@ -33,7 +31,6 @@ import archive.Downloader;
 import app.App;
 import app.Resource;
 import archive.Archive;
-import javax.swing.SwingWorker;
 import ui.DownloadDialog;
 
 /*
