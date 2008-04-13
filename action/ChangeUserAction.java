@@ -56,9 +56,9 @@ public class ChangeUserAction  extends AbstractAction{
         
         newArchive.read();
         
-        if(newArchive.getSize() == 0){
-            newArchive.update();
-        }
+        // カレンダーを更新する。
+        // TODO 大局数が多いと時間がかかるもは問題かも。
+        newArchive.calendarUpdate();
         
         app.setArchive(newArchive);
     }

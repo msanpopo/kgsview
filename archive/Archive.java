@@ -231,7 +231,7 @@ public class Archive {
     /**
      * 月リストの更新と現在の月の対局リストの再取得を行う。（年と月を指定せずに表示する web ページ）
      */
-    public void update(){
+    public void calendarUpdate(){
         // TODO タイムゾーン決め打ち
         Page page = new Page(name, false, TimeZone.getDefault());
         page.download(null);
