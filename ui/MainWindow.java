@@ -18,11 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  */
-
 package ui;
 
 import action.AddMarkAction;
-import action.DownloadAction;
 import action.ChangeUserAction;
 import action.DelMarkAction;
 import action.FilterEditAction;
@@ -34,45 +32,51 @@ import app.KgsConfig;
 import app.MarkList;
 import app.Resource;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ItemEvent;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.plaf.FontUIResource;
 import statistics.StatisticSet;
 
-public class MainWindow extends javax.swing.JFrame implements TableModelListener{
+public class MainWindow extends javax.swing.JFrame implements TableModelListener {
+
     private StatisticSet sset;
-    
     private CalendarPanel calendarPanel;
     private GamePanel gamePanel;
     private StatisticPanel statisticPanel;
     private OpponentPanel opponentTab;
     private CustomPanel customPanel;
     private KgsGraphPanel kgsGraphPanel;
-    
-    public MainWindow(MarkList markList, StatisticSet sset){
+
+    public MainWindow(MarkList markList, StatisticSet sset) {
         this.sset = sset;
-        
+
         Config config = App.getInstance().getConfig();
-        
+
         initComponents();
-        
+
         quitMenuItem.setAction(new QuitAction(this));
-        
+
         editFilterMenuItem.setAction(new FilterEditAction());
         optionMenuItem.setAction(new SettingAction());
-        
+
         addUserMenuItem.setAction(new AddMarkAction(markList));
         delUserMenuItem.setAction(new DelMarkAction(markList));
-        
+
         // TODO 機能未実装
 //        updateButton.setAction(new DownloadAction());
         updateButton.setText("");
-        
+
         userComboBox.setModel(markList);
-        
+
         oldAccountCheckBox.setSelected(config.getBooleanProperty(KgsConfig.OLD_ACCOUNT));
-        
+
         calendarPanel = new CalendarPanel(sset.calendar);
         gamePanel = new GamePanel(sset.game);
         statisticPanel = new StatisticPanel(sset);
@@ -80,14 +84,14 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
         customPanel = new CustomPanel(sset.custom);
         Graph graph = new Graph(sset.game);
         kgsGraphPanel = new KgsGraphPanel();
-        
-        JPanel graphPanel  = new JPanel(new BorderLayout());
+
+        JPanel graphPanel = new JPanel(new BorderLayout());
         graphPanel.add(graph, BorderLayout.CENTER);
-        
+
         sset.game.addTableModelListener(graph);
         sset.game.addTableModelListener(this);
         sset.game.addTableModelListener(kgsGraphPanel);
-        
+
         tabbedPane.addTab(Resource.get("calendar"), calendarPanel);
         tabbedPane.addTab(Resource.get("labelGameList"), gamePanel);
         tabbedPane.addTab(Resource.get("labelStatistic"), statisticPanel);
@@ -95,36 +99,71 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
         tabbedPane.addTab(Resource.get("labelCustom"), customPanel);
         tabbedPane.addTab(Resource.get("labelGraph"), graphPanel);
         tabbedPane.addTab(Resource.get("labelKgsGraph"), kgsGraphPanel);
-        
+
         pack();
-        
+
         int w = config.getIntProperty(KgsConfig.WINDOW_WIDTH);
         int h = config.getIntProperty(KgsConfig.WINDOW_HEIGHT);
         // System.out.println("window size:" + w + ", " + h);
         setSize(w, h);
     }
-    
+
     @Override
     public void tableChanged(TableModelEvent e) {
         Object source = e.getSource();
-        
-        if(source == sset.game){
+
+        if (source == sset.game) {
             int n = sset.game.getRowCount();
             totalLabel.setText(Integer.toString(n));
-            
+
             String user = sset.game.getUserName();
             userComboBox.getEditor().setItem(user);
         }
     }
-    
-    public void setStatusText(String text){
+
+    public void setStatusText(String text) {
         statusLabel.setText(text);
     }
-    
-    public void gamePanelRepaint(){
+
+    public void gamePanelRepaint() {
         gamePanel.repaint();
     }
-    
+
+    public void setUIFont(Font font) {
+//        UIDefaults defaultTable = UIManager.getLookAndFeelDefaults();
+//        for (Object o : defaultTable.keySet()) {
+//            if (o.toString().toLowerCase().endsWith("font")) {
+//                Font f = (Font)defaultTable.get(o.toString());
+//                System.out.println("o:" + o.toString() + "     f:" + f.toString());
+////                Font newFont = font.deriveFont(f.getStyle(), f.getSize());
+//                Font newFont = font.deriveFont((float)f.getSize());
+//                FontUIResource fontUIResource = new FontUIResource(newFont);
+//                UIManager.put(o, fontUIResource);
+//            }
+//        }
+
+        recursiveUpdateUI(this.rootPane, font);
+//        pack();
+    }
+
+    private void recursiveUpdateUI(JComponent p, Font font) {
+        for (Component c : p.getComponents()) {
+            if (c instanceof JComponent) {
+                JComponent jc = (JComponent) c;
+//                jc.updateUI();
+                Font oldFont = jc.getFont();
+                Font newFont = font.deriveFont((float)oldFont.getSize());
+                System.out.println("   font:" + font.toString());
+                System.out.println("oldFont:" + oldFont.toString());
+                System.out.println("newFont:" + newFont.toString());
+                jc.setFont(newFont);
+                if (jc.getComponentCount() > 0) {
+                    recursiveUpdateUI(jc, font);
+                }
+            }
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -281,57 +320,58 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void oldAccountCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_oldAccountCheckBoxItemStateChanged
         Config config = App.getInstance().getConfig();
-        if (evt.getStateChange() == ItemEvent.DESELECTED){
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
             System.out.println("CheckBox : deselected");
             config.setBooleanProperty(KgsConfig.OLD_ACCOUNT, false);
-        }else{
+        } else {
             System.out.println("CheckBox : selected");
             config.setBooleanProperty(KgsConfig.OLD_ACCOUNT, true);
         }
     }//GEN-LAST:event_oldAccountCheckBoxItemStateChanged
-    
+
     private void userComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userComboBoxActionPerformed
         String cmd = evt.getActionCommand();
         System.out.println("userComboBox:" + cmd + ":" + evt);
-        
+
         String newUser = "";
-        
-        if(cmd.equals("comboBoxEdited")){           // 入力した時だけ出る
+
+        if (cmd.equals("comboBoxEdited")) {           // 入力した時だけ出る
+
             System.out.println("userComboBox:comboBoxEdited:" + newUser + ":" + evt);
-        }else if(cmd.equals("comboBoxChanged")){    // コンボから選んだり入力したりしたら出る
-            newUser = (String)userComboBox.getSelectedItem();
-            
+        } else if (cmd.equals("comboBoxChanged")) {    // コンボから選んだり入力したりしたら出る
+
+            newUser = (String) userComboBox.getSelectedItem();
+
             System.out.println("userComboBox:comboBoxChanged:" + newUser + ":" + evt);
         }
-        
+
         ChangeUserAction action = new ChangeUserAction(newUser);
         action.doAction();
     }//GEN-LAST:event_userComboBoxActionPerformed
-    
+
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         System.out.println("MainWindow.Closed");
         App.getInstance().stop();
     }//GEN-LAST:event_formWindowClosed
-    
+
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         int w = evt.getComponent().getWidth();
         int h = evt.getComponent().getHeight();
-        
+
         // System.out.println("componentResized:" + w + ", " + h);
-        
+
         Config config = App.getInstance().getConfig();
         config.setIntProperty(KgsConfig.WINDOW_WIDTH, w);
         config.setIntProperty(KgsConfig.WINDOW_HEIGHT, h);
     }//GEN-LAST:event_formComponentResized
-    
+
     private void formComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentHidden
         System.out.println("componentHidden");
         dispose();
     }//GEN-LAST:event_formComponentHidden
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu UserMenu;
     private javax.swing.JMenuItem addUserMenuItem;
