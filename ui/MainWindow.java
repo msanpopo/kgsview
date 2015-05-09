@@ -343,11 +343,12 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
             System.out.println("userComboBox:comboBoxEdited:" + newUser + ":" + evt);
         } else if (cmd.equals("comboBoxChanged")) {    // コンボから選んだり入力したりしたら出る
 
-            newUser = (String) userComboBox.getSelectedItem();
+            //newUser = (String) userComboBox.getSelectedItem();
 
             System.out.println("userComboBox:comboBoxChanged:" + newUser + ":" + evt);
         }
 
+        newUser = (String) userComboBox.getSelectedItem();
         ChangeUserAction action = new ChangeUserAction(newUser);
         action.doAction();
     }//GEN-LAST:event_userComboBoxActionPerformed

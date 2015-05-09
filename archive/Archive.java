@@ -295,8 +295,10 @@ public class Archive {
             try {
                 // 2ch で kgs の管理者がこのようなツールを作る時はダウンロード間隔３秒以上あけるように言ってたという
                 // 書き込みを見たのでそれにならう。
+                // matlab に６秒という記述を見つけたのでのばした(2015/5/9)
+             
 
-                Thread.sleep(3000);
+                Thread.sleep(6000);
             } catch (InterruptedException ex) {
                 System.err.println("error:Archive:sleep():" + ex);
                 return;
