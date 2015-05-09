@@ -22,7 +22,7 @@ package ui;
 
 import app.App;
 import app.Config;
-import app.KgsConfig;
+import app.KgsConfigEnum;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.util.HashMap;
@@ -93,9 +93,9 @@ public class SettingPanel extends javax.swing.JPanel {
     }
 
     private void load() {
-        commandField.setText(config.getProperty(KgsConfig.SGF_APP_PATH));
+        commandField.setText(config.getProperty(KgsConfigEnum.SGF_APP_PATH));
 
-        String lf = config.getProperty(KgsConfig.LOOK_AND_FEEL);
+        String lf = config.getProperty(KgsConfigEnum.LOOK_AND_FEEL);
         for (LookAndFeelInfo i : lookFeelMap.values()) {
             if (lf.equals(i.getClassName())) {
 
@@ -109,11 +109,11 @@ public class SettingPanel extends javax.swing.JPanel {
         System.out.println("SettingPanel.save:  config:" + config);
         System.out.println("command :" + commandField.getText());
 
-        config.setProperty(KgsConfig.SGF_APP_PATH, commandField.getText());
+        config.setProperty(KgsConfigEnum.SGF_APP_PATH, commandField.getText());
 
         String lf = (String) lafModel.getSelectedItem();
         LookAndFeelInfo info = lookFeelMap.get(lf);
-        config.setProperty(KgsConfig.LOOK_AND_FEEL, info.getClassName());
+        config.setProperty(KgsConfigEnum.LOOK_AND_FEEL, info.getClassName());
 
     }
 

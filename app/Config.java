@@ -53,7 +53,7 @@ public class Config{
         }catch(FileNotFoundException e){
             System.err.println(this.getClass() + ":" + e);
             // デフォルト値のセット
-            for(KgsConfig kc : KgsConfig.values()){
+            for(KgsConfigEnum kc : KgsConfigEnum.values()){
                 setProperty(kc, kc.getDefaultValue());
             }
         }finally{
@@ -67,7 +67,7 @@ public class Config{
         }
     }
     
-    public void setProperty(KgsConfig kgsConfig, String value){
+    public void setProperty(KgsConfigEnum kgsConfig, String value){
         if(value == null){
             System.err.println("error:Config.setProperty: value is null");
             return;
@@ -75,7 +75,7 @@ public class Config{
         prop.setProperty(kgsConfig.getKey(), value);
     }
     
-    public String getProperty(KgsConfig kgsConfig){
+    public String getProperty(KgsConfigEnum kgsConfig){
         String value =  prop.getProperty(kgsConfig.getKey());
         
         // System.out.println("getProperty : name:" + propertyName + " value:" + value);
@@ -87,11 +87,11 @@ public class Config{
         return value;
     }
     
-    public void setBooleanProperty(KgsConfig kgsConfig, boolean value){
+    public void setBooleanProperty(KgsConfigEnum kgsConfig, boolean value){
         prop.setProperty(kgsConfig.getKey(), Boolean.toString(value));
     }
     
-    public boolean getBooleanProperty(KgsConfig kgsConfig){
+    public boolean getBooleanProperty(KgsConfigEnum kgsConfig){
         String value =  prop.getProperty(kgsConfig.getKey());
         
         // System.out.println("getProperty : name:" + propertyName + " value:" + value);
@@ -103,11 +103,11 @@ public class Config{
         return Boolean.valueOf(value);
     }
     
-    public void setIntProperty(KgsConfig kgsConfig, int value){
+    public void setIntProperty(KgsConfigEnum kgsConfig, int value){
         prop.setProperty(kgsConfig.getKey(), Integer.toString(value));
     }
     
-    public int getIntProperty(KgsConfig kgsConfig){
+    public int getIntProperty(KgsConfigEnum kgsConfig){
         String value =  prop.getProperty(kgsConfig.getKey());
         
         //System.out.println("getProperty : name:" + kgsConfig.getKey() + " value:" + value);

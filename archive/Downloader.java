@@ -22,13 +22,14 @@
 package archive;
 
 import app.App;
+import app.KgsConfigEnum;
 import java.util.List;
 import javax.swing.SwingWorker;
 
 import ui.DownloadDialog;
 
 public class Downloader extends SwingWorker<Archive, String>{
-    private Archive archive;
+    private final Archive archive;
     private boolean oldAccount;
     
     private DownloadDialog dialog;
@@ -37,12 +38,8 @@ public class Downloader extends SwingWorker<Archive, String>{
     
     public Downloader(Archive archive) {
         this.archive = archive;
-        this.oldAccount = false;
+        this.oldAccount = App.getInstance().getConfig().getBooleanProperty(KgsConfigEnum.OLD_ACCOUNT);
         this.canceled = false;
-    }
-
-    public void setOldAccount(boolean bool){
-        oldAccount = bool;
     }
     
     public void setDialog(DownloadDialog dialog){

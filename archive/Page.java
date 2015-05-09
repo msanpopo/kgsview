@@ -20,6 +20,8 @@
  */
 package archive;
 
+import app.App;
+import app.KgsConfigEnum;
 import game.RengoReviewGame;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -54,7 +56,6 @@ class Page {
 
     private static final String URL_BASE = "http://www.gokgs.com/gameArchives.jsp?user=";
     private String name;
-    private boolean oldAccount;
     private TimeZone timeZone;
     private int year;
     private int month;
@@ -67,32 +68,32 @@ class Page {
     // 月のテーブルのみがあるパターン
     private static final Pattern p1 = Pattern.compile(".*?(<table.*?</table>).*");
 
-    public Page(String name, boolean oldAccount, TimeZone timeZone) {
-        init(name, oldAccount, timeZone, 0, 0);
+    public Page(String name, TimeZone timeZone) {
+        init(name, timeZone, 0, 0);
     }
 
-    public Page(String name, boolean oldAccount, TimeZone timeZone, int year, int month) {
-        init(name, oldAccount, timeZone, year, month);
+    public Page(String name, TimeZone timeZone, int year, int month) {
+        init(name, timeZone, year, month);
     }
 
-    private void init(String name, boolean oldAccount, TimeZone zone, int year, int month) {
+    private void init(String name, TimeZone zone, int year, int month) {
         this.name = name;
-        this.oldAccount = oldAccount;
         this.timeZone = zone;
         this.year = year;
         this.month = month;
         this.downloaded = false;
 
+        boolean oldAccount = App.getInstance().getConfig().getBooleanProperty(KgsConfigEnum.OLD_ACCOUNT);
         try {
             if (year == 0 && month == 0) {
                 if (oldAccount == true) {
-                    url = new URL(URL_BASE + name + "&oldAccounts=t");
+                    url = new URL(URL_BASE + name + "&oldAccounts=y");
                 } else {
                     url = new URL(URL_BASE + name);
                 }
             } else {
                 if (oldAccount == true) {
-                    url = new URL(URL_BASE + name + "&oldAccounts=t&year=" + year + "&month=" + month);
+                    url = new URL(URL_BASE + name + "&oldAccounts=y&year=" + year + "&month=" + month);
                 } else {
                     url = new URL(URL_BASE + name + "&year=" + year + "&month=" + month);
                 }

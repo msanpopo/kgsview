@@ -23,7 +23,7 @@ package statistics;
 
 import app.App;
 import app.Config;
-import app.KgsConfig;
+import app.KgsConfigEnum;
 import archive.Archive;
 import game.Game;
 import game.GameTableModel;
@@ -69,12 +69,12 @@ public class StatisticSet {
         Config config = App.getInstance().getConfig();
         FilterList fl = App.getInstance().getFilterList();
         
-        gameFilter = fl.find(config.getProperty(KgsConfig.FILTER_GAME_LIST));
-        typeFilter = fl.find(config.getProperty(KgsConfig.FILTER_TYPE));
-        setupFilter = fl.find(config.getProperty(KgsConfig.FILTER_SETUP));
-        recordFilter = fl.find(config.getProperty(KgsConfig.FILTER_RECORD));
-        monthFilter = fl.find(config.getProperty(KgsConfig.FILTER_MONTH));
-        opponentFilter = fl.find(config.getProperty(KgsConfig.FILTER_OPPONENT));
+        gameFilter = fl.find(config.getProperty(KgsConfigEnum.FILTER_GAME_LIST));
+        typeFilter = fl.find(config.getProperty(KgsConfigEnum.FILTER_TYPE));
+        setupFilter = fl.find(config.getProperty(KgsConfigEnum.FILTER_SETUP));
+        recordFilter = fl.find(config.getProperty(KgsConfigEnum.FILTER_RECORD));
+        monthFilter = fl.find(config.getProperty(KgsConfigEnum.FILTER_MONTH));
+        opponentFilter = fl.find(config.getProperty(KgsConfigEnum.FILTER_OPPONENT));
     }
     
     public void rebuild(){

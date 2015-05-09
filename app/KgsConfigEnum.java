@@ -21,7 +21,7 @@
 
 package app;
 
-public enum KgsConfig {
+public enum KgsConfigEnum {
     USER_LIST("userList", ""),
     LOOK_AND_FEEL("lookAndFeel", "javax.swing.plaf.metal.MetalLookAndFeel"),
     OLD_ACCOUNT("oldAccount", "false"),
@@ -39,7 +39,7 @@ public enum KgsConfig {
     private final String key;
     private final String defaultValue;
 
-    private KgsConfig(String key, String defaultValue){
+    private KgsConfigEnum(String key, String defaultValue){
         this.key = key;
         this.defaultValue = defaultValue;
     }

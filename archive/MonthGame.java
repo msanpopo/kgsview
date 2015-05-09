@@ -246,7 +246,7 @@ public class MonthGame implements Comparable<MonthGame>{
         
         downloadMark = false;
         
-        Page page = new Page(name, false, TimeZone.getDefault(), year, month);
+        Page page = new Page(name, TimeZone.getDefault(), year, month);
         page.download(downloader);
 
         boolean downloaded = page.isDownloaded();

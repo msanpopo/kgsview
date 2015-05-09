@@ -23,7 +23,7 @@ package game.property;
 
 import app.App;
 import app.Config;
-import app.KgsConfig;
+import app.KgsConfigEnum;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -139,7 +139,7 @@ public class SgfFile {
     
     public void open(){
         Config config = App.getInstance().getConfig();
-        String sgfAppPath = config.getProperty(KgsConfig.SGF_APP_PATH);
+        String sgfAppPath = config.getProperty(KgsConfigEnum.SGF_APP_PATH);
                 
         if(place == SgfPlace.NO || place == SgfPlace.UNKNOWN){
             return;

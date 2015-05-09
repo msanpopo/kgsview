@@ -21,7 +21,7 @@
 
 package action;
 
-import app.KgsConfig;
+import app.KgsConfigEnum;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -62,7 +62,6 @@ public class DownloadAction  extends AbstractAction{
         dialog.resetProgressBar(0);
         //dialog.setInfoText(Resource.get("downloadMonthTable"));
         
-        downloader.setOldAccount(app.getConfig().getBooleanProperty(KgsConfig.OLD_ACCOUNT));
         downloader.setDialog(dialog);
         downloader.addPropertyChangeListener(dialog);
         downloader.execute();

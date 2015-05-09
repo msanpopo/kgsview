@@ -46,7 +46,8 @@ public class ChangeUserAction  extends AbstractAction{
     public void doAction(){
         App app = App.getInstance();
         
-        if(newUser == null || newUser.equals("") || newUser.equals(app.getCurrentUser())){
+        if(newUser == null || newUser.equals("") /*|| newUser.equals(app.getCurrentUser())*/){
+            System.out.println("changeUserAction doAction newUser:" + newUser);
             return;
         }
         
@@ -57,7 +58,7 @@ public class ChangeUserAction  extends AbstractAction{
         newArchive.read();
         
         // カレンダーを更新する。
-        // TODO 大局数が多いと時間がかかるもは問題かも。
+        // TODO 大局数が多いと時間がかかるのは問題かも。
         newArchive.calendarUpdate();
         
         app.setArchive(newArchive);

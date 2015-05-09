@@ -28,7 +28,7 @@ import action.QuitAction;
 import action.SettingAction;
 import app.App;
 import app.Config;
-import app.KgsConfig;
+import app.KgsConfigEnum;
 import app.MarkList;
 import app.Resource;
 import java.awt.BorderLayout;
@@ -75,7 +75,7 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
 
         userComboBox.setModel(markList);
 
-        oldAccountCheckBox.setSelected(config.getBooleanProperty(KgsConfig.OLD_ACCOUNT));
+        oldAccountCheckBox.setSelected(config.getBooleanProperty(KgsConfigEnum.OLD_ACCOUNT));
 
         calendarPanel = new CalendarPanel(sset.calendar);
         gamePanel = new GamePanel(sset.game);
@@ -102,8 +102,8 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
 
         pack();
 
-        int w = config.getIntProperty(KgsConfig.WINDOW_WIDTH);
-        int h = config.getIntProperty(KgsConfig.WINDOW_HEIGHT);
+        int w = config.getIntProperty(KgsConfigEnum.WINDOW_WIDTH);
+        int h = config.getIntProperty(KgsConfigEnum.WINDOW_HEIGHT);
         // System.out.println("window size:" + w + ", " + h);
         setSize(w, h);
     }
@@ -324,11 +324,11 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
     private void oldAccountCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_oldAccountCheckBoxItemStateChanged
         Config config = App.getInstance().getConfig();
         if (evt.getStateChange() == ItemEvent.DESELECTED) {
-            System.out.println("CheckBox : deselected");
-            config.setBooleanProperty(KgsConfig.OLD_ACCOUNT, false);
+            System.out.println("CheckBox : oldAccount deselected");
+            config.setBooleanProperty(KgsConfigEnum.OLD_ACCOUNT, false);
         } else {
-            System.out.println("CheckBox : selected");
-            config.setBooleanProperty(KgsConfig.OLD_ACCOUNT, true);
+            System.out.println("CheckBox : oldAccount selected");
+            config.setBooleanProperty(KgsConfigEnum.OLD_ACCOUNT, true);
         }
     }//GEN-LAST:event_oldAccountCheckBoxItemStateChanged
 
@@ -364,8 +364,8 @@ public class MainWindow extends javax.swing.JFrame implements TableModelListener
         // System.out.println("componentResized:" + w + ", " + h);
 
         Config config = App.getInstance().getConfig();
-        config.setIntProperty(KgsConfig.WINDOW_WIDTH, w);
-        config.setIntProperty(KgsConfig.WINDOW_HEIGHT, h);
+        config.setIntProperty(KgsConfigEnum.WINDOW_WIDTH, w);
+        config.setIntProperty(KgsConfigEnum.WINDOW_HEIGHT, h);
     }//GEN-LAST:event_formComponentResized
 
     private void formComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentHidden

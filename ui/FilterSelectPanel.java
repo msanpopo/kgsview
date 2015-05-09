@@ -24,7 +24,7 @@ package ui;
 import action.FilterEditAction;
 import app.App;
 import app.Config;
-import app.KgsConfig;
+import app.KgsConfigEnum;
 import app.Resource;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -90,15 +90,15 @@ public class FilterSelectPanel extends javax.swing.JPanel{
             opponentModel.addElement(name);
         }
         
-        loadFilter(KgsConfig.FILTER_GAME_LIST, gameListModel);
-        loadFilter(KgsConfig.FILTER_TYPE, typeModel);
-        loadFilter(KgsConfig.FILTER_SETUP, setupModel);
-        loadFilter(KgsConfig.FILTER_RECORD, recordModel);
-        loadFilter(KgsConfig.FILTER_MONTH, monthModel);
-        loadFilter(KgsConfig.FILTER_OPPONENT, opponentModel);
+        loadFilter(KgsConfigEnum.FILTER_GAME_LIST, gameListModel);
+        loadFilter(KgsConfigEnum.FILTER_TYPE, typeModel);
+        loadFilter(KgsConfigEnum.FILTER_SETUP, setupModel);
+        loadFilter(KgsConfigEnum.FILTER_RECORD, recordModel);
+        loadFilter(KgsConfigEnum.FILTER_MONTH, monthModel);
+        loadFilter(KgsConfigEnum.FILTER_OPPONENT, opponentModel);
     }
     
-    private void loadFilter(KgsConfig kgsConf, ComboBoxModel model){
+    private void loadFilter(KgsConfigEnum kgsConf, ComboBoxModel model){
         String name = config.getProperty(kgsConf);
         
         if(name == null){
@@ -112,15 +112,15 @@ public class FilterSelectPanel extends javax.swing.JPanel{
     }
     
     private void save(){
-        saveFilter(KgsConfig.FILTER_GAME_LIST, gameListModel);
-        saveFilter(KgsConfig.FILTER_TYPE, typeModel);
-        saveFilter(KgsConfig.FILTER_SETUP, setupModel);
-        saveFilter(KgsConfig.FILTER_RECORD, recordModel);
-        saveFilter(KgsConfig.FILTER_MONTH, monthModel);
-        saveFilter(KgsConfig.FILTER_OPPONENT, opponentModel);
+        saveFilter(KgsConfigEnum.FILTER_GAME_LIST, gameListModel);
+        saveFilter(KgsConfigEnum.FILTER_TYPE, typeModel);
+        saveFilter(KgsConfigEnum.FILTER_SETUP, setupModel);
+        saveFilter(KgsConfigEnum.FILTER_RECORD, recordModel);
+        saveFilter(KgsConfigEnum.FILTER_MONTH, monthModel);
+        saveFilter(KgsConfigEnum.FILTER_OPPONENT, opponentModel);
     }
     
-    private void saveFilter(KgsConfig kgsConf, ComboBoxModel model){
+    private void saveFilter(KgsConfigEnum kgsConf, ComboBoxModel model){
         String name = (String)model.getSelectedItem();
         if(name == null){
             name = NO_FILTER;

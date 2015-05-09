@@ -114,7 +114,7 @@ public class App{
         statisticSet = new StatisticSet();
         
         markList = new MarkList();
-        markList.setConfString(config.getProperty(KgsConfig.USER_LIST));
+        markList.setConfString(config.getProperty(KgsConfigEnum.USER_LIST));
         
         filterList = new FilterList(appDir);
         
@@ -123,7 +123,7 @@ public class App{
         
         window = new MainWindow(markList, statisticSet);
         
-        String lookAndFeelClassName = config.getProperty(KgsConfig.LOOK_AND_FEEL);
+        String lookAndFeelClassName = config.getProperty(KgsConfigEnum.LOOK_AND_FEEL);
         try {
             UIManager.setLookAndFeel(lookAndFeelClassName);
             SwingUtilities.updateComponentTreeUI(window);
@@ -138,7 +138,7 @@ public class App{
     public void stop(){
         System.out.println("App.stop()");
         
-        config.setProperty(KgsConfig.USER_LIST, markList.getConfString());
+        config.setProperty(KgsConfigEnum.USER_LIST, markList.getConfString());
         config.write();
         
         filterList.writeXml();
@@ -200,7 +200,7 @@ public class App{
         //System.out.println("TimeZone:" + TimeZone.getDefault().toString());
         //return TimeZone.getDefault();
         //return TimeZone.getTimeZone("JST");
-        return TimeZone.getTimeZone(config.getProperty(KgsConfig.TIME_ZONE));
+        return TimeZone.getTimeZone(config.getProperty(KgsConfigEnum.TIME_ZONE));
     }
     
     public void setStatusText(String text){

@@ -233,7 +233,7 @@ public class Archive {
      */
     public void calendarUpdate(){
         // TODO タイムゾーン決め打ち
-        Page page = new Page(name, false, TimeZone.getDefault());
+        Page page = new Page(name, TimeZone.getDefault());
         page.download(null);
         
         if(page.hasMonthList()){
